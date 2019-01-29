@@ -56,8 +56,10 @@
 #include <QRect>
 #include <QWidget>
 #include <QMouseEvent>
+#include <QKeyEvent>
 #include <vector>
 #include "vec2d.h"
+#include "line.h"
 
 QT_BEGIN_NAMESPACE
 class QPaintEvent;
@@ -65,6 +67,8 @@ QT_END_NAMESPACE
 
 //! [0]
 enum Operation { NoTransformation, Translate, Rotate, Scale };
+enum shapeSelect { Ellipse, LineShape, Rectangle };
+enum lineSelect { Solid, Dashed, Dotted };
 //! [0]
 
 //! [1]
@@ -85,23 +89,30 @@ protected:
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
 //! [1]
+
+public slots:
+    void ellipseTrigger() { shapeSelected = shapeSelect::Ellipse; }
+    void rectangleTrigger() { shapeSelected = shapeSelect::Rectangle; }
+    void lineTrigger() { shapeSelected = shapeSelect::LineShape; }
 
 //! [2]
 private:
     void drawCoordinates(QPainter &painter);
     void drawOutline(QPainter &painter);
     void drawShape(QPainter &painter);
-    void drawLines(QPainter &painter);
     void transformPainter(QPainter &painter);
 
     QList<Operation> operations;
     QPainterPath shape;
     QRect xBoundingRect;
     QRect yBoundingRect;
-    Vec2d start; //todo make vec2d class
+    Vec2d start;
     Vec2d end;
-    std::vector<std::vector<Vec2d>> lines;
+    std::vector<Shape*> shapes;
+    shapeSelect shapeSelected;
+    lineSelect lineSelected;
 };
 //! [2]
 

@@ -49,9 +49,12 @@
 ****************************************************************************/
 
 #include "renderarea.h"
+#include "rectangle.h"
+#include "ellipse.h"
 
 #include <QPainter>
 #include <QPaintEvent>
+
 
 //! [0]
 RenderArea::RenderArea(QWidget *parent)
@@ -103,6 +106,7 @@ QSize RenderArea::sizeHint() const
 void RenderArea::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
+
     //    painter.setRenderHint(QPainter::Antialiasing);
     //    painter.fillRect(event->rect(), QBrush(Qt::white));
 
@@ -114,7 +118,6 @@ void RenderArea::paintEvent(QPaintEvent *event)
     painter.save();                 //saves painter state, because following functions might change it
     //    transformPainter(painter);
     drawShape(painter);
-    drawLines(painter);
     painter.restore();
     //! [6]
 
@@ -125,6 +128,10 @@ void RenderArea::paintEvent(QPaintEvent *event)
     //! [8]
     transformPainter(painter);
     drawCoordinates(painter);
+
+    for(int i = 0; i < shapes.size(); i++) {
+        shapes[i]->draw(&painter);
+    }
 }
 //! [8]
 
@@ -150,12 +157,9 @@ void RenderArea::drawCoordinates(QPainter &painter)
 //! [10]
 void RenderArea::drawOutline(QPainter &painter)
 {
-    painter.setPen(Qt::darkGreen);
-    painter.setPen(Qt::DashLine);
+    painter.setPen(Qt::black);
+    painter.setPen(Qt::SolidLine);
     painter.setBrush(Qt::NoBrush);
-    for(int i = 0; i < lines.size(); i++) {
-        painter.drawLine(lines[i][0].x, lines[i][0].y, lines[i][1].x, lines[i][1].y); //edit qpainter.h add one that takes Vec2ds              is this stupid? really might need line class
-    }
 }
 //! [10]
 
@@ -190,18 +194,39 @@ void RenderArea::transformPainter(QPainter &painter)
 
 void RenderArea::mousePressEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {
-        start = {static_cast<double>(event->x()), static_cast<double>(event->y())};  //establish a conversion from QPoint to Vec2d?   are these casts okay?
+        start = {event->x(), event->y()};  //establish a conversion from QPoint to Vec2d?   are these casts okay?
     }
 }
 
 void RenderArea::mouseReleaseEvent(QMouseEvent *event) {
     if(event->button() == Qt::LeftButton) {
-        end = {static_cast<double>(event->x()), static_cast<double>(event->y())};
-        lines.push_back({start, end}); //make line class?
-        update();
+        end = {event->x(), event->y()};
+
+        switch(shapeSelected) {
+        case Ellipse: {
+            class Ellipse* cr = new class Ellipse(start, end);
+            shapes.push_back(cr);
+            update();
+            break;
+        }
+        case LineShape: {
+            class Line* ln = new class Line(start, end);
+            shapes.push_back(ln);
+            update();
+            break;
+        }
+        case Rectangle: {
+            class Rectangle* rec = new class Rectangle(start, end);
+            shapes.push_back(rec);
+            update();
+            break;
+        }
+        }
     }
 }
 
-void RenderArea::drawLines(QPainter &painter) {
+void RenderArea::keyPressEvent(QKeyEvent *event) {
+    if(event->key() == Qt::Key_E) {        //use case switch for shape selection, lastkey field perhaps?
 
+    }
 }

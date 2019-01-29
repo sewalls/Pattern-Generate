@@ -52,6 +52,7 @@
 
 #include <QComboBox>
 #include <QGridLayout>
+#include <QMenuBar>
 
 //! [0]
 Window::Window()
@@ -64,10 +65,48 @@ Window::Window()
 //    shapeComboBox->addItem(tr("Text"));
 //    shapeComboBox->addItem(tr("Truck"));
 
-    QGridLayout *layout = new QGridLayout;
-    layout->addWidget(originalRenderArea, 0, 0);
+//    QGridLayout *layout = new QGridLayout;
+//    layout->addWidget(originalRenderArea, 0, 0);
 //    layout->addWidget(shapeComboBox, 1, 0);
 //! [0]
+
+    QVBoxLayout *boxLayout = new QVBoxLayout(this);    //why am I declaring like this?
+    boxLayout->addWidget(originalRenderArea, 0, 0);
+
+    QMenuBar *menuBar = new QMenuBar;
+    QMenu *chooseMenu = new QMenu;
+    QAction *menuAction;
+    QActionGroup *shapeChosen = new QActionGroup(this);
+
+    chooseMenu = menuBar->addMenu("Shape");
+    menuAction = chooseMenu->addAction("Ellipse");
+    menuAction->setCheckable(true);
+    shapeChosen->addAction(menuAction);
+    connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(ellipseTrigger()));
+    menuAction = chooseMenu->addAction("Line");
+    menuAction->setCheckable(true);
+    shapeChosen->addAction(menuAction);
+    connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(lineTrigger()));
+    menuAction = chooseMenu->addAction("Rectangle");
+    menuAction->setCheckable(true);
+    shapeChosen->addAction(menuAction);
+    connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(rectangleTrigger()));                     //is this efficient?
+
+    chooseMenu = menuBar->addMenu("Pen");
+    menuAction = chooseMenu->addAction("Solid");
+    menuAction->setCheckable(true);
+    shapeChosen->addAction(menuAction);
+    connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(solidTrigger()));
+    menuAction = chooseMenu->addAction("Dashed");
+    menuAction->setCheckable(true);
+    shapeChosen->addAction(menuAction);
+    connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(dashTrigger()));
+    menuAction = chooseMenu->addAction("Dotted");
+    menuAction->setCheckable(true);
+    shapeChosen->addAction(menuAction);
+    connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(dottedTrigger()));
+
+    this->layout()->setMenuBar(menuBar);
 
 //! [1]
 //    for (int i = 0; i < NumTransformedAreas; ++i) {
@@ -88,11 +127,12 @@ Window::Window()
 //! [1]
 
 //! [2]
-    setLayout(layout);
+    setLayout(boxLayout);
 //    setupShapes();
 //    shapeSelected(0);
 
-    setWindowTitle(tr("Transformations"));
+    setWindowTitle(tr("Draw"));
+    setFixedSize(800, 600);
 }
 //! [2]
 

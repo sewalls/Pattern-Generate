@@ -2,11 +2,11 @@
 
 Vec2d::Vec2d()
 {
-    x = 0;
-    y = 0;
+    xi = 0;
+    yi = 0;
 }
 
-Vec2d::Vec2d(double x, double y) {
-    this->x = x;
-    this->y = y;
+Vec2d::Vec2d(int x, int y) {
+    this->xi = x;
+    this->yi = y;
 }
