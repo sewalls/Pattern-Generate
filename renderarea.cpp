@@ -49,8 +49,10 @@
 ****************************************************************************/
 
 #include "renderarea.h"
-#include "rectangle.h"
 #include "ellipse.h"
+#include "line.h"           //better way to include?
+#include "rectangle.h"
+#include "freedraw.h"
 
 #include <QPainter>
 #include <QPaintEvent>
@@ -63,8 +65,7 @@ RenderArea::RenderArea(QWidget *parent)
     QFont newFont = font();
     newFont.setPixelSize(12);
     setFont(newFont);
-    start = {0, 0};
-    end = {0, 0};
+    activeShape = nullptr;
 
     QFontMetrics fontMetrics(newFont);
     xBoundingRect = fontMetrics.boundingRect(tr("x"));
@@ -128,6 +129,10 @@ void RenderArea::paintEvent(QPaintEvent *event)
     //! [8]
     transformPainter(painter);
     drawCoordinates(painter);
+
+    if(activeShape) {
+        activeShape->changePen(penSelected);   //default shape?
+    }
 
     for(int i = 0; i < shapes.size(); i++) {
         shapes[i]->draw(&painter);
@@ -194,34 +199,50 @@ void RenderArea::transformPainter(QPainter &painter)
 
 void RenderArea::mousePressEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {
-        start = {event->x(), event->y()};  //establish a conversion from QPoint to Vec2d?   are these casts okay?
+        switch(shapeSelected) {
+        case Ellipse: {
+            class Ellipse* cr = new class Ellipse();
+            cr->mousePressEvent(event);
+            shapes.push_back(cr);
+            activeShape = cr;
+            break;
+        }
+        case LineShape: {
+            class Line* ln = new class Line();
+            ln->mousePressEvent(event);
+            shapes.push_back(ln);
+            activeShape = ln;
+            break;
+        }
+        case Rectangle: {
+            class Rectangle* rc = new class Rectangle();
+            rc->mousePressEvent(event);
+            shapes.push_back(rc);
+            activeShape = rc;
+            break;
+        }
+        case FreeDraw: {
+            class FreeDraw* fd = new class FreeDraw();
+            fd->mousePressEvent(event);
+            shapes.push_back(fd);
+            activeShape = fd;
+            break;
+        }
+        }
+    }
+}
+
+void RenderArea::mouseMoveEvent(QMouseEvent *event) {
+    if(activeShape) {
+        activeShape->mouseMoveEvent(event);
+        update();
     }
 }
 
 void RenderArea::mouseReleaseEvent(QMouseEvent *event) {
-    if(event->button() == Qt::LeftButton) {
-        end = {event->x(), event->y()};
-
-        switch(shapeSelected) {
-        case Ellipse: {
-            class Ellipse* cr = new class Ellipse(start, end);
-            shapes.push_back(cr);
-            update();
-            break;
-        }
-        case LineShape: {
-            class Line* ln = new class Line(start, end);
-            shapes.push_back(ln);
-            update();
-            break;
-        }
-        case Rectangle: {
-            class Rectangle* rec = new class Rectangle(start, end);
-            shapes.push_back(rec);
-            update();
-            break;
-        }
-        }
+    if(activeShape) {
+        activeShape->mouseReleaseEvent(event);
+        update();
     }
 }
 

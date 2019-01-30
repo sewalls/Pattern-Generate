@@ -1,23 +1,22 @@
-#ifndef LINE_H
-#define LINE_H
+#ifndef FREEDRAW_H
+#define FREEDRAW_H
 
 #include "shape.h"
 #include "vec2d.h"
 #include <QPainter>
+#include <QMouseEvent> //why do I need to reinclude this?
 
-class Line : public Shape
+class FreeDraw : public Shape
 {
 public:
-    Line();
-    Line(Vec2d p1, Vec2d p2);
     void draw(QPainter* painter) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
+    FreeDraw();
 
-protected:
-    Vec2d p1;
-    Vec2d p2;
+private:
+    QPainterPath path;
 };
 
-#endif // LINE_H
+#endif // FREEDRAW_H

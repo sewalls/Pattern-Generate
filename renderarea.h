@@ -58,8 +58,8 @@
 #include <QMouseEvent>
 #include <QKeyEvent>
 #include <vector>
+#include "shape.h"
 #include "vec2d.h"
-#include "line.h"
 
 QT_BEGIN_NAMESPACE
 class QPaintEvent;
@@ -67,8 +67,7 @@ QT_END_NAMESPACE
 
 //! [0]
 enum Operation { NoTransformation, Translate, Rotate, Scale };
-enum shapeSelect { Ellipse, LineShape, Rectangle };
-enum lineSelect { Solid, Dashed, Dotted };
+enum shapeSelect { Ellipse, LineShape, Rectangle, FreeDraw };
 //! [0]
 
 //! [1]
@@ -88,6 +87,7 @@ public:
 protected:
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
 //! [1]
@@ -96,6 +96,11 @@ public slots:
     void ellipseTrigger() { shapeSelected = shapeSelect::Ellipse; }
     void rectangleTrigger() { shapeSelected = shapeSelect::Rectangle; }
     void lineTrigger() { shapeSelected = shapeSelect::LineShape; }
+    void freedrawTrigger() { shapeSelected = shapeSelect::FreeDraw; }
+    void solidTrigger() { penSelected = Qt::SolidLine; selectMode = false; }
+    void dashedTrigger() { penSelected = Qt::DashLine; selectMode = false; }
+    void dottedTrigger()  { penSelected = Qt::DotLine; selectMode = false; }
+    void selectTrigger() { selectMode = true; } // to do}
 
 //! [2]
 private:
@@ -108,11 +113,11 @@ private:
     QPainterPath shape;
     QRect xBoundingRect;
     QRect yBoundingRect;
-    Vec2d start;
-    Vec2d end;
     std::vector<Shape*> shapes;
     shapeSelect shapeSelected;
-    lineSelect lineSelected;
+    Qt::PenStyle penSelected;
+    Shape* activeShape; //fix drawing
+    bool selectMode;
 };
 //! [2]
 

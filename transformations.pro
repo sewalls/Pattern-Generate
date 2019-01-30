@@ -7,7 +7,8 @@ HEADERS     = renderarea.h \
     shape.h \
     line.h \
     rectangle.h \
-    ellipse.h
+    ellipse.h \
+    freedraw.h
 SOURCES     = main.cpp \
               renderarea.cpp \
 	      window.cpp \
@@ -15,7 +16,8 @@ SOURCES     = main.cpp \
     shape.cpp \
     line.cpp \
     rectangle.cpp \
-    ellipse.cpp
+    ellipse.cpp \
+    freedraw.cpp
 
 # install
 target.path = $$[QT_INSTALL_EXAMPLES]/widgets/painting/transformations

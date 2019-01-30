@@ -77,6 +77,7 @@ Window::Window()
     QMenu *chooseMenu = new QMenu;
     QAction *menuAction;
     QActionGroup *shapeChosen = new QActionGroup(this);
+    QActionGroup *penChosen = new QActionGroup(this);
 
     chooseMenu = menuBar->addMenu("Shape");
     menuAction = chooseMenu->addAction("Ellipse");
@@ -90,21 +91,30 @@ Window::Window()
     menuAction = chooseMenu->addAction("Rectangle");
     menuAction->setCheckable(true);
     shapeChosen->addAction(menuAction);
-    connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(rectangleTrigger()));                     //is this efficient?
+    connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(rectangleTrigger()));
+    menuAction = chooseMenu->addAction("Free Draw");
+    menuAction->setCheckable(true);
+    shapeChosen->addAction(menuAction);
+    connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(freedrawTrigger()));
+    //is this efficient?
 
     chooseMenu = menuBar->addMenu("Pen");
     menuAction = chooseMenu->addAction("Solid");
     menuAction->setCheckable(true);
-    shapeChosen->addAction(menuAction);
+    penChosen->addAction(menuAction);
     connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(solidTrigger()));
     menuAction = chooseMenu->addAction("Dashed");
     menuAction->setCheckable(true);
-    shapeChosen->addAction(menuAction);
-    connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(dashTrigger()));
+    penChosen->addAction(menuAction);
+    connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(dashedTrigger()));
     menuAction = chooseMenu->addAction("Dotted");
     menuAction->setCheckable(true);
-    shapeChosen->addAction(menuAction);
+    penChosen->addAction(menuAction);
     connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(dottedTrigger()));
+    menuAction = chooseMenu->addAction("Select");
+    menuAction->setCheckable(true);
+    penChosen->addAction(menuAction);
+    connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(selectTrigger()));
 
     this->layout()->setMenuBar(menuBar);
 
@@ -135,73 +145,6 @@ Window::Window()
     setFixedSize(800, 600);
 }
 //! [2]
-
-//! [3]
-void Window::setupShapes()
-{
-    QPainterPath truck;
-//! [3]
-    truck.setFillRule(Qt::WindingFill);
-    truck.moveTo(0.0, 87.0);
-    truck.lineTo(0.0, 60.0);
-    truck.lineTo(10.0, 60.0);
-    truck.lineTo(35.0, 35.0);
-    truck.lineTo(100.0, 35.0);
-    truck.lineTo(100.0, 87.0);
-    truck.lineTo(0.0, 87.0);
-    truck.moveTo(17.0, 60.0);
-    truck.lineTo(55.0, 60.0);
-    truck.lineTo(55.0, 40.0);
-    truck.lineTo(37.0, 40.0);
-    truck.lineTo(17.0, 60.0);
-    truck.addEllipse(17.0, 75.0, 25.0, 25.0);
-    truck.addEllipse(63.0, 75.0, 25.0, 25.0);
-
-//! [4]
-    QPainterPath clock;
-//! [4]
-    clock.addEllipse(-50.0, -50.0, 100.0, 100.0);
-    clock.addEllipse(-48.0, -48.0, 96.0, 96.0);
-    clock.moveTo(0.0, 0.0);
-    clock.lineTo(-2.0, -2.0);
-    clock.lineTo(0.0, -42.0);
-    clock.lineTo(2.0, -2.0);
-    clock.lineTo(0.0, 0.0);
-    clock.moveTo(0.0, 0.0);
-    clock.lineTo(2.732, -0.732);
-    clock.lineTo(24.495, 14.142);
-    clock.lineTo(0.732, 2.732);
-    clock.lineTo(0.0, 0.0);
-
-//! [5]
-    QPainterPath house;
-//! [5]
-    house.moveTo(-45.0, -20.0);
-    house.lineTo(0.0, -45.0);
-    house.lineTo(45.0, -20.0);
-    house.lineTo(45.0, 45.0);
-    house.lineTo(-45.0, 45.0);
-    house.lineTo(-45.0, -20.0);
-    house.addRect(15.0, 5.0, 20.0, 35.0);
-    house.addRect(-35.0, -15.0, 25.0, 25.0);
-
-//! [6]
-    QPainterPath text;
-//! [6]
-    QFont font;
-    font.setPixelSize(50);
-    QRect fontBoundingRect = QFontMetrics(font).boundingRect(tr("Qt"));
-    text.addText(-QPointF(fontBoundingRect.center()), font, tr("Qt"));
-
-//! [7]
-    shapes.append(clock);
-    shapes.append(house);
-    shapes.append(text);
-    shapes.append(truck);
-
-    connect(shapeComboBox, SIGNAL(activated(int)), this, SLOT(shapeSelected(int)));
-}
-//! [7]
 
 //! [8]
 void Window::operationChanged()
