@@ -10,26 +10,31 @@ Rectangle::Rectangle(Vec2d p1, Vec2d p2)
     this->p2 = p2;
 }
 
-int Rectangle::width() {
+Rectangle::Rectangle(Vec2d p1, double w, double h) {
+    this->p1 = p1;
+    p2 = {p1.x() - w, p1.y() - h};
+}
+
+double Rectangle::width() {
     return p2.x() - p1.x();
 }
 
-int Rectangle::height() {
+double Rectangle::height() {
     return p2.y() - p1.y();
 }
 
 void Rectangle::draw(QPainter* painter) {
     painter->setPen(selfPen);
-    painter->drawRect(p1.x(), p1.y(), width(), height()); // is this resource inefficient?
+    painter->drawRect(QRectF{p1.x(), p1.y(), width(), height()}); // is this resource inefficient?
 }
 
 void Rectangle::mousePressEvent(QMouseEvent *event) {
-    p1 = {event->x(), event->y()};
-    p1 = {event->x(), event->y()};
+    p1 = {event->localPos().x(), event->localPos().y()};
+    p1 = {event->localPos().x(), event->localPos().y()};
 }
 
 void Rectangle::mouseMoveEvent(QMouseEvent *event) {
-    p2 = {event->x(), event->y()};
+    p2 = {event->localPos().x(), event->localPos().y()};
 }
 
 void Rectangle::mouseReleaseEvent(QMouseEvent *event) {

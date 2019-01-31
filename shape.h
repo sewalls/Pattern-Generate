@@ -18,7 +18,6 @@ public:
 
 protected:
     Qt::PenStyle selfPen = Qt::SolidLine;
-    //    virtual void transform() = 0;
 };
 
 #endif // SHAPE_H

@@ -10,11 +10,11 @@ void FreeDraw::draw(QPainter* painter) {
 }
 
 void FreeDraw::mousePressEvent(QMouseEvent *event) {
-    path.moveTo(event->x(), event->y());
+    path.moveTo(event->localPos().x(), event->localPos().y());
 }
 
 void FreeDraw::mouseMoveEvent(QMouseEvent *event) {
-    path.lineTo(event->x(), event->y());
+    path.lineTo(event->localPos().x(), event->localPos().y());
 }
 
 void FreeDraw::mouseReleaseEvent(QMouseEvent *event) {

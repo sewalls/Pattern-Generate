@@ -15,12 +15,11 @@ public:
     void mouseReleaseEvent(QMouseEvent *event) override;
     Ellipse();
     Ellipse(Vec2d p1, Vec2d p2);
-    Ellipse(Vec2d p1, int w, int h);
+    Ellipse(Vec2d p1, double w, double h);
 
 private:
     Vec2d p1;
-    int w;
-    int h;
+    Vec2d p2;
 };
 
 #endif // ELLIPSE_H

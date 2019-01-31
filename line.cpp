@@ -12,16 +12,16 @@ Line::Line(Vec2d p1, Vec2d p2)
 
 void Line::draw(QPainter *painter) {
     painter->setPen(selfPen);
-    painter->drawLine(p1.x(), p1.y(), p2.x(), p2.y());
+    painter->drawLine(QLineF{p1.x(), p1.y(), p2.x(), p2.y()});
 }
 
 void Line::mousePressEvent(QMouseEvent *event) {
-    p1 = {event->x(), event->y()};
-    p2 = {event->x(), event->y()};
+    p1 = {event->localPos().x(), event->localPos().y()};
+    p2 = {event->localPos().x(), event->localPos().y()};
 }
 
 void Line::mouseMoveEvent(QMouseEvent *event) {
-    p2 = {event->x(), event->y()};
+    p2 = {event->localPos().x(), event->localPos().y()};
 }
 
 void Line::mouseReleaseEvent(QMouseEvent *event) {

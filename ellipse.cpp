@@ -6,30 +6,26 @@ Ellipse::Ellipse() {
 
 Ellipse::Ellipse(Vec2d p1, Vec2d p2) {
     this->p1 = p1;
-    this->w = p2.x() - p1.x();
-    this->h = p2.y() - p1.y();
+    this->p2 = p2;
 }
 
-Ellipse::Ellipse(Vec2d p1, int w, int h) {
+Ellipse::Ellipse(Vec2d p1, double w, double h) {
     this->p1 = p1;
-    this->w = w;
-    this->h = h;
+    p2 = {p1.x() + w, p1.y() + h};
 }
 
 void Ellipse::draw(QPainter* painter) {
     painter->setPen(selfPen);
-    painter->drawEllipse(p1.x(), p1.y(), w, h);
+    painter->drawEllipse(QRectF{p1.x(), p1.y(), p2.x(), p2.y()});
 }
 
 void Ellipse::mousePressEvent(QMouseEvent *event) {
-    p1 = {event->x(), event->y()};
-    w = event->x() - p1.x();
-    h = event->y() - p1.y();
+    p1 = {event->localPos().x(), event->localPos().y()};
+    p2 = {event->localPos().x() - p1.x(), event->localPos().y() - p1.y()};
 }
 
 void Ellipse::mouseMoveEvent(QMouseEvent *event) {
-    w = event->x() - p1.x();
-    h = event->y() - p1.y();
+    p2 = {event->localPos().x() - p1.x(), event->localPos().y() - p1.y()};
 }
 
 void Ellipse::mouseReleaseEvent(QMouseEvent *event) {

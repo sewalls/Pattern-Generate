@@ -6,7 +6,7 @@ Vec2d::Vec2d()
     yi = 0;
 }
 
-Vec2d::Vec2d(int x, int y) {
+Vec2d::Vec2d(double x, double y) {
     this->xi = x;
     this->yi = y;
 }

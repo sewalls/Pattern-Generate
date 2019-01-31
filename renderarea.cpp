@@ -128,36 +128,16 @@ void RenderArea::paintEvent(QPaintEvent *event)
 
     //! [8]
     transformPainter(painter);
-    drawCoordinates(painter);
 
     if(activeShape) {
         activeShape->changePen(penSelected);   //default shape?
     }
 
-    for(int i = 0; i < shapes.size(); i++) {
+    for(unsigned int i = 0; i < shapes.size(); i++) {
         shapes[i]->draw(&painter);
     }
 }
 //! [8]
-
-//! [9]
-void RenderArea::drawCoordinates(QPainter &painter)
-{
-    //    painter.setPen(Qt::red);
-
-    //    painter.drawLine(0, 0, 50, 0);
-    //    painter.drawLine(48, -2, 50, 0);
-    //    painter.drawLine(48, 2, 50, 0);
-    //    painter.drawText(60 - xBoundingRect.width() / 2,
-    //                     0 + xBoundingRect.height() / 2, tr("x"));
-
-    //    painter.drawLine(0, 0, 0, 50);
-    //    painter.drawLine(-2, 48, 0, 50);
-    //    painter.drawLine(2, 48, 0, 50);
-    //    painter.drawText(0 - yBoundingRect.width() / 2,
-    //                     60 + yBoundingRect.height() / 2, tr("y"));
-}
-//! [9]
 
 //! [10]
 void RenderArea::drawOutline(QPainter &painter)
@@ -190,7 +170,6 @@ void RenderArea::transformPainter(QPainter &painter)
             painter.rotate(60);
             break;
         case NoTransformation:
-        default:
             ;
         }
     }

@@ -5,14 +5,14 @@ class Vec2d
 {
 public:
     Vec2d();
-    Vec2d(int x, int y);
+    Vec2d(double x, double y);
 
-    int x() {return xi;}
-    int y() {return yi;}         //ints?
+    double x() {return xi;}
+    double y() {return yi;}         //ints?
 
 private:           //this seems like something I should do, but is it? different names perhaps?
-    int xi;
-    int yi;
+    double xi;
+    double yi;
 };
 
 #endif // VEC2D_H
