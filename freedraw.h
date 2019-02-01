@@ -6,7 +6,7 @@
 #include <QPainter>
 #include <QMouseEvent> //why do I need to reinclude this?
 
-class FreeDraw : public Shape
+class FreeDraw : public Shape  //todo: freedraw line type change
 {
 public:
     void draw(QPainter* painter) override;

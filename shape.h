@@ -17,7 +17,7 @@ public:
     virtual void changePen(Qt::PenStyle penType) {selfPen = penType;}
 
 protected:
-    Qt::PenStyle selfPen = Qt::SolidLine;
+    Qt::PenStyle selfPen;
 };
 
 #endif // SHAPE_H

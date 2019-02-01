@@ -108,7 +108,7 @@ void RenderArea::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
 
-    //    painter.setRenderHint(QPainter::Antialiasing);
+    painter.setRenderHint(QPainter::Antialiasing);
     //    painter.fillRect(event->rect(), QBrush(Qt::white));
 
 

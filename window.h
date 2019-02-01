@@ -52,6 +52,7 @@
 #define WINDOW_H
 
 #include "renderarea.h"
+#include "colorwindow.h"
 
 #include <QList>
 #include <QPainterPath>
@@ -61,7 +62,6 @@ QT_BEGIN_NAMESPACE
 class QComboBox;
 QT_END_NAMESPACE
 
-//! [0]
 class Window : public QWidget
 {
     Q_OBJECT
@@ -71,15 +71,14 @@ public:
 
 public slots:
     void operationChanged();
-    void shapeSelected(int index);
-//! [0]
+    void colorOpened();
 
-//! [1]
 private:
     void setupShapes();
 
     enum { NumTransformedAreas = 3 };
     RenderArea *originalRenderArea;
+    ColorWindow *chooseColor;
     RenderArea *transformedRenderAreas[NumTransformedAreas];
     QComboBox *shapeComboBox;
     QComboBox *operationComboBoxes[NumTransformedAreas];

@@ -100,7 +100,7 @@ public slots:
     void solidTrigger() { penSelected = Qt::SolidLine; selectMode = false; }
     void dashedTrigger() { penSelected = Qt::DashLine; selectMode = false; }
     void dottedTrigger()  { penSelected = Qt::DotLine; selectMode = false; }
-    void selectTrigger() { selectMode = true; } // to do}
+    void selectTrigger() { selectMode = true; } // to do
 
 //! [2]
 private:

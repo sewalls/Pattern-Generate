@@ -57,7 +57,7 @@
 Window::Window()
 {
     originalRenderArea = new RenderArea;
-    this->setStyleSheet("background-color: white;");
+    this->setStyleSheet("background-color: white;"); //white menu bar?
 
     QVBoxLayout *boxLayout = new QVBoxLayout(this);
     boxLayout->addWidget(originalRenderArea, 0, 0);
