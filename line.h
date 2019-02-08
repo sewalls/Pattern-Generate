@@ -15,6 +15,11 @@ public:
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
 
+    void mouseMoveEventSelect(QMouseEvent *event) override;
+    void mousePressEventSelect(QMouseEvent *event) override;
+
+    double distanceClicked(QMouseEvent *event) override;
+
 protected:
     Vec2d p1;
     Vec2d p2;

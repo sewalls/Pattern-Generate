@@ -57,7 +57,6 @@
 #include <QPainter>
 #include <QPaintEvent>
 
-
 //! [0]
 RenderArea::RenderArea(QWidget *parent)
     : QWidget(parent)
@@ -207,13 +206,23 @@ void RenderArea::mousePressEvent(QMouseEvent *event) {
             activeShape = fd;
             break;
         }
+        case Select: {
+            if(activeShape) {
+                activeShape->mousePressEventSelect(event);
+            }
+        }
         }
     }
 }
 
 void RenderArea::mouseMoveEvent(QMouseEvent *event) {
     if(activeShape) {
-        activeShape->mouseMoveEvent(event);
+        if(shapeSelected == shapeSelect::Select) {
+            activeShape->mouseMoveEventSelect(event);
+        }
+        else {
+            activeShape->mouseMoveEvent(event);
+        }
         update();
     }
 }

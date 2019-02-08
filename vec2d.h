@@ -7,12 +7,11 @@ public:
     Vec2d();
     Vec2d(double x, double y);
 
-    double x() {return xi;}
-    double y() {return yi;}         //ints?
-
-private:           //this seems like something I should do, but is it? different names perhaps?
-    double xi;
-    double yi;
+    double x;
+    double y;
 };
+
+Vec2d operator+(Vec2d p1, Vec2d p2); //why declared out here?
+Vec2d operator-(Vec2d p1, Vec2d p2);
 
 #endif // VEC2D_H

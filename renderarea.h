@@ -67,7 +67,7 @@ QT_END_NAMESPACE
 
 //! [0]
 enum Operation { NoTransformation, Translate, Rotate, Scale };
-enum shapeSelect { Ellipse, LineShape, Rectangle, FreeDraw };
+enum shapeSelect { Ellipse, LineShape, Rectangle, FreeDraw, Select };
 //! [0]
 
 //! [1]
@@ -97,10 +97,10 @@ public slots:
     void rectangleTrigger() { shapeSelected = shapeSelect::Rectangle; }
     void lineTrigger() { shapeSelected = shapeSelect::LineShape; }
     void freedrawTrigger() { shapeSelected = shapeSelect::FreeDraw; }
+    void selectTrigger() { shapeSelected = shapeSelect::Select; }
     void solidTrigger() { penSelected = Qt::SolidLine; selectMode = false; }
     void dashedTrigger() { penSelected = Qt::DashLine; selectMode = false; }
     void dottedTrigger()  { penSelected = Qt::DotLine; selectMode = false; }
-    void selectTrigger() { selectMode = true; } // to do
 
 //! [2]
 private:

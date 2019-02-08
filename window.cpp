@@ -57,7 +57,7 @@
 Window::Window()
 {
     originalRenderArea = new RenderArea;
-    this->setStyleSheet("background-color: white;");
+    this->setStyleSheet("background-color: white;"); //white menu bar?
 
     QVBoxLayout *boxLayout = new QVBoxLayout(this);
     boxLayout->addWidget(originalRenderArea, 0, 0);
@@ -85,6 +85,10 @@ Window::Window()
     menuAction->setCheckable(true);
     shapeChosen->addAction(menuAction);
     connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(freedrawTrigger()));
+    menuAction = chooseMenu->addAction("Select");
+    menuAction->setCheckable(true);
+    shapeChosen->addAction(menuAction);
+    connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(selectTrigger()));
     //is this efficient?
 
     chooseMenu = menuBar->addMenu("Pen");
@@ -100,10 +104,6 @@ Window::Window()
     menuAction->setCheckable(true);
     penChosen->addAction(menuAction);
     connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(dottedTrigger()));
-//    menuAction = chooseMenu->addAction("Select");
-//    menuAction->setCheckable(true);
-//    penChosen->addAction(menuAction);
-//    connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(selectTrigger()));
 
     menuAction = menuBar->addAction("Color");
     connect(menuAction, SIGNAL(triggered()), this, SLOT(colorOpened()));

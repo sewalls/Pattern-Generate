@@ -12,20 +12,20 @@ Rectangle::Rectangle(Vec2d p1, Vec2d p2)
 
 Rectangle::Rectangle(Vec2d p1, double w, double h) {
     this->p1 = p1;
-    p2 = {p1.x() - w, p1.y() - h};
+    p2 = {p1.x - w, p1.y - h};
 }
 
 double Rectangle::width() {
-    return p2.x() - p1.x();
+    return p2.x - p1.x;
 }
 
 double Rectangle::height() {
-    return p2.y() - p1.y();
+    return p2.y - p1.y;
 }
 
 void Rectangle::draw(QPainter* painter) {
     painter->setPen(selfPen);
-    painter->drawRect(QRectF{p1.x(), p1.y(), width(), height()}); // is this resource inefficient?
+    painter->drawRect(QRectF{p1.x, p1.y, width(), height()}); // is this resource inefficient?
 }
 
 void Rectangle::mousePressEvent(QMouseEvent *event) {
@@ -38,5 +38,17 @@ void Rectangle::mouseMoveEvent(QMouseEvent *event) {
 }
 
 void Rectangle::mouseReleaseEvent(QMouseEvent *event) {
+
+}
+
+void Rectangle::mousePressEventSelect(QMouseEvent *event) {
+
+}
+
+void Rectangle::mouseMoveEventSelect(QMouseEvent *event) {
+
+}
+
+double Rectangle::distanceClicked(QMouseEvent *event) {
 
 }
