@@ -33,7 +33,6 @@ void FreeDraw::mousePressEventSelect(QMouseEvent *event) {
 
 void FreeDraw::mouseMoveEventSelect(QMouseEvent *event) {
     path.translate(event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y);  //jumps from mouse position relative to where it was first drawn, why? How to fix?
-    path.translate(event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y);  //jumps from mouse position relative to where it was first drawn, why? How to fix?
 
     movePoint = {event->localPos().x(), event->localPos().y()};
 }
@@ -65,17 +64,17 @@ bool FreeDraw::clickedIn(QMouseEvent *event) {
 
     int count = 0;
 
-//    if(lineSegsIntersect(u, v, {path.currentPosition().x(), path.currentPosition().y()}, {path.elementAt(0).x, path.elementAt(0).y})) {
-//        count++;
-//    }
+    if(lineSegsIntersect(u, v, {path.currentPosition().x(), path.currentPosition().y()}, {path.elementAt(0).x, path.elementAt(0).y})) {
+        count++;
+    }
 
     // here is the evil code that causes the mystery crash
 
-//    for(unsigned int i = 0; i < path.length() - 1; i++) {
-//        if(lineSegsIntersect(u, v, {path.elementAt(i).x, path.elementAt(i).y}, {path.elementAt(i+1).x, path.elementAt(i+1).y})) {
-//            count++;
-//        }
-//    }
+    for(unsigned int i = 0; i < path.elementCount() - 1; i++) {
+        if(lineSegsIntersect(u, v, {path.elementAt(i).x, path.elementAt(i).y}, {path.elementAt(i+1).x, path.elementAt(i+1).y})) {
+            count++;
+        }
+    }
 
     return count % 2;
 }
