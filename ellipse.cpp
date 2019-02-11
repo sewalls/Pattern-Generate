@@ -40,6 +40,10 @@ void Ellipse::mouseMoveEventSelect(QMouseEvent *event) {
 
 }
 
+void Ellipse::mouseReleaseEventSelect(QMouseEvent *event) {
+
+}
+
 double Ellipse::distanceClicked(QMouseEvent *event) {
 
 }

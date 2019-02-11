@@ -99,7 +99,7 @@ public slots:
     void freedrawTrigger() { shapeSelected = shapeSelect::FreeDraw; }
     void selectTrigger() { shapeSelected = shapeSelect::Select; }
     void solidTrigger() { penSelected = Qt::SolidLine; selectMode = false; }
-    void dashedTrigger() { penSelected = Qt::DashLine; selectMode = false; }
+    void dashedTrigger() { penSelected = Qt::DashLine; selectMode = false; } //freedraw line is not working properly
     void dottedTrigger()  { penSelected = Qt::DotLine; selectMode = false; }
 
 //! [2]

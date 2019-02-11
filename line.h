@@ -17,6 +17,7 @@ public:
 
     void mouseMoveEventSelect(QMouseEvent *event) override;
     void mousePressEventSelect(QMouseEvent *event) override;
+    void mouseReleaseEventSelect(QMouseEvent * event) override;
 
     double distanceClicked(QMouseEvent *event) override;
 

@@ -61,7 +61,3 @@ void Rectangle::mouseMoveEventSelect(QMouseEvent *event) {
 void Rectangle::mouseReleaseEventSelect(QMouseEvent *event) {
     isMoving = false;
 }
-
-double Rectangle::distanceClicked(QMouseEvent *event) {
-
-}

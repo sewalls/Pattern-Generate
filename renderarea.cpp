@@ -229,13 +229,18 @@ void RenderArea::mouseMoveEvent(QMouseEvent *event) {
 
 void RenderArea::mouseReleaseEvent(QMouseEvent *event) {
     if(activeShape) {
-        activeShape->mouseReleaseEvent(event);
+        if(shapeSelected == shapeSelect::Select) {
+            activeShape->mouseReleaseEventSelect(event);
+        }
+        else {
+            activeShape->mouseReleaseEvent(event);
+        }
         update();
     }
 }
 
 void RenderArea::keyPressEvent(QKeyEvent *event) {
-    if(event->key() == Qt::Key_E) {        //use case switch for shape selection, lastkey field perhaps?
+    if(event->key() == Qt::Key_E) { //if needed
 
     }
 }

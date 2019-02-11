@@ -29,7 +29,7 @@ void Line::mouseReleaseEvent(QMouseEvent *event) {
 }
 
 void Line::mousePressEventSelect(QMouseEvent *event) {
-
+    
 }
 
 void Line::mouseMoveEventSelect(QMouseEvent *event) {
@@ -41,5 +41,9 @@ void Line::mouseReleaseEventSelect(QMouseEvent *event) {
 }
 
 double Line::distanceClicked(QMouseEvent *event) {
-
+    Vec2d p = {event->localPos().x(), event->localPos().y()};
+    double t = (p - p1) * (p2 - p1);
+    if(0 < t && t < 1) {
+        Vec2d b = (p2 - p1).scale(t));
+    }
 }

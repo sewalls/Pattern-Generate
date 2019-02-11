@@ -42,10 +42,6 @@ void FreeDraw::mouseReleaseEventSelect(QMouseEvent *event) {
     isMoving = false;
 }
 
-double FreeDraw::distanceClicked(QMouseEvent *event) {
-
-}
-
 //code to check for being clicked in, should they be members?
 
 double FreeDraw::negDotProduct(Vec2d p1, Vec2d p2) {
