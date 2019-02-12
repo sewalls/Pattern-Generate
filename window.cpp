@@ -77,6 +77,7 @@ Window::Window()
     menuAction->setCheckable(true);
     shapeChosen->addAction(menuAction);
     connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(lineTrigger()));
+    menuAction->trigger();
     menuAction = chooseMenu->addAction("Rectangle");
     menuAction->setCheckable(true);
     shapeChosen->addAction(menuAction);
@@ -96,6 +97,7 @@ Window::Window()
     menuAction->setCheckable(true);
     penChosen->addAction(menuAction);
     connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(solidTrigger()));
+    menuAction->trigger();
     menuAction = chooseMenu->addAction("Dashed");
     menuAction->setCheckable(true);
     penChosen->addAction(menuAction);

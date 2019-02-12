@@ -9,6 +9,8 @@
 class FreeDraw : public Shape  //todo: freedraw line type change
 {
 public:
+    FreeDraw();
+    
     void draw(QPainter* painter) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
@@ -19,8 +21,6 @@ public:
     void mouseReleaseEventSelect(QMouseEvent * event) override;
 
     bool clickedIn(QMouseEvent *event);
-
-    FreeDraw();
 
 private:
     QPainterPath path;

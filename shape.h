@@ -20,12 +20,12 @@ public:
     virtual void mouseReleaseEventSelect(QMouseEvent * event) = 0;
 
     virtual void changePen(Qt::PenStyle penType) {selfPen = penType;}
-    virtual double distanceClicked(QMouseEvent *event) = 0; //is this necessary? should it take in an event or a point? probably a point
+
+    bool isMoving = false;
 
 protected:
     Qt::PenStyle selfPen;
     Vec2d movePoint;
-    bool isMoving = false;
 };
 
 #endif // SHAPE_H

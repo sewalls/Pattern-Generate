@@ -10,6 +10,7 @@ class Shape  //todo: add triangle class, use painter path, should be easy
 {
 public:
     Shape();
+    
     virtual void draw(QPainter* painter) = 0;
     virtual void mousePressEvent(QMouseEvent *event) = 0;
     virtual void mouseMoveEvent(QMouseEvent *event) = 0;
@@ -21,10 +22,11 @@ public:
 
     virtual void changePen(Qt::PenStyle penType) {selfPen = penType;}
 
+    bool isMoving = false;
+
 protected:
     Qt::PenStyle selfPen;
     Vec2d movePoint;
-    bool isMoving = false;
 };
 
 #endif // SHAPE_H

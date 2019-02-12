@@ -16,12 +16,16 @@ void Vec2d::translate(double x, double y) {
     this->y += y;
 }
 
+double operator*(Vec2d p1, Vec2d p2) {
+    return double {p1.x * p2.x + p1.y * p2.y};
+}
+
 Vec2d operator-(Vec2d p1, Vec2d p2)
 {
-    return Vec2d { p1.x - p2.x, p1.y - p2.y };
+    return Vec2d {p1.x - p2.x, p1.y - p2.y};
 }
 
 Vec2d operator+(Vec2d p1, Vec2d p2)
 {
-    return Vec2d {p1.x + p2.x, p1.y + p2.y };
+    return Vec2d {p1.x + p2.x, p1.y + p2.y};
 }

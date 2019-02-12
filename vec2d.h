@@ -9,10 +9,15 @@ public:
 
     void translate(double x, double y);
 
+    Vec2d scaled(double s) {return {x * s, y * s};}
+
+    double lengthSquared() {return x * x + y * y;}
+
     double x;
     double y;
 };
 
+double operator*(Vec2d p1, Vec2d p2);
 Vec2d operator+(Vec2d p1, Vec2d p2); //why declared out here?
 Vec2d operator-(Vec2d p1, Vec2d p2);
 

@@ -211,7 +211,7 @@ void RenderArea::mousePressEvent(QMouseEvent *event) {
                 shapes[0]->mousePressEventSelect(event);
                 for(unsigned int i = 1; i < shapes.size(); i++) {
                     if(!shapes[i-1]->isMoving) {
-                        shapes[i]->mousePressEventSelect(event);
+                        shapes[i]->mousePressEventSelect(event);        //multiple shapes still being selected
                     }
                 }
             }
