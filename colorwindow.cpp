@@ -2,6 +2,5 @@
 
 ColorWindow::ColorWindow()
 {
-    setWindowTitle(tr("Pick a Color"));
-    setFixedSize(300, 300);
+    dialog.open();
 }

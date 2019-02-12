@@ -55,7 +55,7 @@
 #include "freedraw.h"
 
 #include <QPainter>
-#include <QPaintEvent>
+#include <QPaintEvent>  //todo: sizeable grid / margins
 
 //! [0]
 RenderArea::RenderArea(QWidget *parent)
@@ -129,7 +129,7 @@ void RenderArea::paintEvent(QPaintEvent *event)
     transformPainter(painter);
 
     if(activeShape) {
-        activeShape->changePen(penSelected);   //default shape?
+        activeShape->changePen(pen);   //default shape?
     }
 
     for(unsigned int i = 0; i < shapes.size(); i++) {
@@ -208,14 +208,18 @@ void RenderArea::mousePressEvent(QMouseEvent *event) {
         }
         case Select: {
             if(activeShape) {
-                shapes[0]->mousePressEventSelect(event);
-                for(unsigned int i = 1; i < shapes.size(); i++) {
-                    if(!shapes[i-1]->isMoving) {
-                        shapes[i]->mousePressEventSelect(event);
+                for(unsigned int i = 0; i < shapes.size(); i++) {
+                    shapes[i]->mousePressEventSelect(event);
+                }
+
+                for(unsigned int i = 0; i < shapes.size(); i++) {
+                    if(shapes[i]->isMoving) {
+                        activeShape = shapes[i];
                     }
                 }
             }
         }
+
         }
     }
 }
@@ -223,12 +227,7 @@ void RenderArea::mousePressEvent(QMouseEvent *event) {
 void RenderArea::mouseMoveEvent(QMouseEvent *event) {
     if(activeShape) {
         if(shapeSelected == shapeSelect::Select) {
-            shapes[0]->mouseMoveEventSelect(event);
-            for(unsigned int i = 1; i < shapes.size(); i++) {
-                if(!shapes[i-1]->isMoving) {
-                    shapes[i]->mouseMoveEventSelect(event);
-                }
-            }
+            activeShape->mouseMoveEventSelect(event);
         }
         else {
             activeShape->mouseMoveEvent(event);
@@ -240,12 +239,7 @@ void RenderArea::mouseMoveEvent(QMouseEvent *event) {
 void RenderArea::mouseReleaseEvent(QMouseEvent *event) {
     if(activeShape) {
         if(shapeSelected == shapeSelect::Select) {
-            shapes[0]->mouseReleaseEventSelect(event);
-            for(unsigned int i = 1; i < shapes.size(); i++) {
-                if(!shapes[i-1]->isMoving) {
-                    shapes[i]->mouseReleaseEventSelect(event);
-                }
-            }
+            activeShape->mouseReleaseEventSelect(event);
         }
         else {
             activeShape->mouseReleaseEvent(event);
@@ -258,4 +252,11 @@ void RenderArea::keyPressEvent(QKeyEvent *event) {
     if(event->key() == Qt::Key_E) { //if needed
 
     }
+}
+
+void RenderArea::colorOpened() {
+    if(shapeSelected != shapeSelect::Select) {
+        activeShape = nullptr;                 //this is so the last drawn shape doesn't get changed, may want this behavior though
+    }
+    pen.setColor(colorDialog.getColor());
 }

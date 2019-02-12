@@ -11,7 +11,7 @@ Line::Line(Vec2d p1, Vec2d p2)
 }
 
 void Line::draw(QPainter *painter) {
-    painter->setPen(selfPen);
+    painter->setPen(pen);
     painter->drawLine(QLineF{p1.x, p1.y, p2.x, p2.y});
 }
 

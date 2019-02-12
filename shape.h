@@ -2,6 +2,7 @@
 #define SHAPE_H
 
 #include <QMouseEvent>
+#include <QPen>
 #include <vec2d.h>
 
 class QPainter;
@@ -10,6 +11,7 @@ class Shape  //todo: add triangle class, use painter path, should be easy
 {
 public:
     Shape();
+
     virtual void draw(QPainter* painter) = 0;
     virtual void mousePressEvent(QMouseEvent *event) = 0;
     virtual void mouseMoveEvent(QMouseEvent *event) = 0;
@@ -19,12 +21,12 @@ public:
     virtual void mouseMoveEventSelect(QMouseEvent *event) = 0;
     virtual void mouseReleaseEventSelect(QMouseEvent * event) = 0;
 
-    virtual void changePen(Qt::PenStyle penType) {selfPen = penType;}
+    virtual void changePen(QPen pen) {this->pen = pen;}
 
     bool isMoving = false;
 
 protected:
-    Qt::PenStyle selfPen;
+    QPen pen;
     Vec2d movePoint;
 };
 

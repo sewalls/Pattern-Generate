@@ -15,16 +15,8 @@ Rectangle::Rectangle(Vec2d p1, double w, double h) {
     p2 = {p1.x - w, p1.y - h};
 }
 
-double Rectangle::width() {
-    return p2.x - p1.x;
-}
-
-double Rectangle::height() {
-    return p2.y - p1.y;
-}
-
 void Rectangle::draw(QPainter* painter) {
-    painter->setPen(selfPen);
+    painter->setPen(pen);
     painter->drawRect(QRectF{p1.x, p1.y, width(), height()}); // is this resource inefficient?
 }
 
@@ -60,4 +52,12 @@ void Rectangle::mouseMoveEventSelect(QMouseEvent *event) {
 
 void Rectangle::mouseReleaseEventSelect(QMouseEvent *event) {
     isMoving = false;
+}
+
+double Rectangle::width() {
+    return p2.x - p1.x;
+}
+
+double Rectangle::height() {
+    return p2.y - p1.y;
 }

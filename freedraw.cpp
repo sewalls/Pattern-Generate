@@ -6,6 +6,7 @@ FreeDraw::FreeDraw()
 }
 
 void FreeDraw::draw(QPainter* painter) {
+    painter->setPen(pen);
     painter->drawPath(path);
 }
 

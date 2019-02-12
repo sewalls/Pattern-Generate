@@ -108,7 +108,7 @@ Window::Window()
     connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(dottedTrigger()));
 
     menuAction = menuBar->addAction("Color");
-    connect(menuAction, SIGNAL(triggered()), this, SLOT(colorOpened()));
+    connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(colorOpened()));
 
 
 
@@ -151,9 +151,4 @@ void Window::operationChanged()
         operations.append(operationTable[index]);
         transformedRenderAreas[i]->setOperations(operations);
     }
-}
-
-void Window::colorOpened() {
-    chooseColor = new ColorWindow();
-    chooseColor->show();
 }

@@ -15,7 +15,7 @@ Ellipse::Ellipse(Vec2d p1, double w, double h) {
 }
 
 void Ellipse::draw(QPainter* painter) {
-    painter->setPen(selfPen);
+    painter->setPen(pen);
     painter->drawEllipse(QRectF{p1.x, p1.y, p2.x, p2.y});
 }
 

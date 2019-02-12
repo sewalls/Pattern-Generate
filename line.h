@@ -10,6 +10,7 @@ class Line : public Shape
 public:
     Line();
     Line(Vec2d p1, Vec2d p2);
+
     void draw(QPainter* painter) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;

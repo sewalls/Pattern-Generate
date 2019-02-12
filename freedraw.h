@@ -6,9 +6,11 @@
 #include <QPainter>
 #include <QMouseEvent> //why do I need to reinclude this?
 
-class FreeDraw : public Shape  //todo: freedraw line type change
+class FreeDraw : public Shape
 {
 public:
+    FreeDraw();
+
     void draw(QPainter* painter) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
@@ -18,9 +20,7 @@ public:
     void mousePressEventSelect(QMouseEvent *event) override;
     void mouseReleaseEventSelect(QMouseEvent * event) override;
 
-    bool clickedIn(QMouseEvent *event);
-
-    FreeDraw();
+    bool clickedIn(QMouseEvent *event); //still not wholly accurate
 
 private:
     QPainterPath path;

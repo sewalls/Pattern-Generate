@@ -11,6 +11,7 @@ public:
     Rectangle();
     Rectangle(Vec2d p1, Vec2d p2);
     Rectangle(Vec2d p1, double w, double h);
+
     void draw(QPainter* painter) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;

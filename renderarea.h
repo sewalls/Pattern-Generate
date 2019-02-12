@@ -58,6 +58,7 @@
 #include <QMouseEvent>
 #include <QKeyEvent>
 #include <vector>
+#include <QColorDialog>
 #include "shape.h"
 #include "vec2d.h"
 
@@ -98,9 +99,10 @@ public slots:
     void lineTrigger() { shapeSelected = shapeSelect::LineShape; }
     void freedrawTrigger() { shapeSelected = shapeSelect::FreeDraw; }
     void selectTrigger() { shapeSelected = shapeSelect::Select; }
-    void solidTrigger() { penSelected = Qt::SolidLine; selectMode = false; }
-    void dashedTrigger() { penSelected = Qt::DashLine; selectMode = false; } //freedraw line is not working properly
-    void dottedTrigger()  { penSelected = Qt::DotLine; selectMode = false; }
+    void solidTrigger() { pen.setStyle(Qt::SolidLine); selectMode = false; }
+    void dashedTrigger() { pen.setStyle(Qt::DashLine); selectMode = false; } //freedraw line is not working properly
+    void dottedTrigger()  { pen.setStyle(Qt::DotLine); selectMode = false; }
+    void colorOpened();
 
 //! [2]
 private:
@@ -115,9 +117,10 @@ private:
     QRect yBoundingRect;
     std::vector<Shape*> shapes;
     shapeSelect shapeSelected;
-    Qt::PenStyle penSelected;
+    QPen pen;
     Shape* activeShape; //fix drawing
     bool selectMode;
+    QColorDialog colorDialog;
 };
 //! [2]
 

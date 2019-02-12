@@ -2,6 +2,7 @@
 #define COLORWINDOW_H
 
 #include <QWidget>
+#include <QColorDialog>
 
 class ColorWindow : public QWidget
 {
@@ -9,6 +10,7 @@ class ColorWindow : public QWidget
 
 public:
     ColorWindow();
+    QColorDialog dialog;
 };
 
 #endif // COLORWINDOW_H

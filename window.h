@@ -57,6 +57,7 @@
 #include <QList>
 #include <QPainterPath>
 #include <QWidget>
+#include <QColorDialog>
 
 QT_BEGIN_NAMESPACE
 class QComboBox;
@@ -71,7 +72,6 @@ public:
 
 public slots:
     void operationChanged();
-    void colorOpened();
 
 private:
     void setupShapes();
