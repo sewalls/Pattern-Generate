@@ -11,18 +11,75 @@ void FreeDraw::draw(QPainter* painter) {
 }
 
 void FreeDraw::mousePressEvent(QMouseEvent *event) {
-    path.moveTo(event->localPos().x(), event->localPos().y());
+    switch(currentState) {
+    case Precreated: {
+        path.moveTo(event->localPos().x(), event->localPos().y());
+        currentState = Creating;
+        break;
+    }
+    case Creating: {
+        path.moveTo(event->localPos().x(), event->localPos().y());
+        break;
+    }
+    case Moving: {
+        path.translate(event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y);
+        movePoint = {event->localPos().x(), event->localPos().y()};
+        break;
+    }
+    case Finished: {
+        if(clickedIn(event)) {
+            currentState = Moving;
+        }
+        break;
+    }
+    }
 }
 
-void FreeDraw::mouseMoveEvent(QMouseEvent *event) {
-    if((std::abs((event->localPos().x() - path.currentPosition().x())) > 0.1)
-            || (std::abs((event->localPos().y() - path.currentPosition().y())) > 0.1)) {
-        path.lineTo(event->localPos().x(), event->localPos().y());
+void FreeDraw::mouseMoveEvent(QMouseEvent *event) { //click to click vs click and hold, figure out how to separate these two
+    switch(currentState) {
+    case Precreated: {
+
+        break;
+    }
+    case Creating: {
+        if((std::abs((event->localPos().x() - path.currentPosition().x())) > 0.1)
+                || (std::abs((event->localPos().y() - path.currentPosition().y())) > 0.1)) {
+            path.lineTo(event->localPos().x(), event->localPos().y());
+        }
+        break;
+    }
+    case Moving: {
+        path.translate(event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y);
+        movePoint = {event->localPos().x(), event->localPos().y()};
+        break;
+    }
+    case Finished: {
+        //do I need anything here?
+        break;
+    }
     }
 }
 
 void FreeDraw::mouseReleaseEvent(QMouseEvent *event) {
-    path.closeSubpath();
+    switch(currentState) {
+    case Precreated: {
+
+        break;
+    }
+    case Creating: {
+        path.closeSubpath();
+        currentState = Finished;
+        break;
+    }
+    case Moving: {
+        currentState = Finished;
+        break;
+    }
+    case Finished: {
+
+        break;
+    }
+    }
 }
 
 void FreeDraw::mousePressEventSelect(QMouseEvent *event) {

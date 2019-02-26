@@ -1,14 +1,12 @@
-#ifndef ELLIPSE_H
-#define ELLIPSE_H
+#ifndef POLYLINE_H
+#define POLYLINE_H
 
 #include "shape.h"
 
-class Ellipse : public Shape
+class PolyLine : public Shape
 {
 public:
-    Ellipse();
-    Ellipse(Vec2d p1, Vec2d p2);
-    Ellipse(Vec2d p1, double w, double h);
+    PolyLine();
 
     void draw(QPainter* painter) override;
     void mousePressEvent(QMouseEvent *event) override;
@@ -19,11 +17,8 @@ public:
     void mousePressEventSelect(QMouseEvent *event) override;
     void mouseReleaseEventSelect(QMouseEvent * event) override;
 
-    double distanceClicked(QMouseEvent *event);
-
-private:
-    Vec2d p1;
-    Vec2d p2;
+protected:
+    QPainterPath path;
 };
 
-#endif // ELLIPSE_H
+#endif // POLYLINE_H

@@ -53,6 +53,7 @@
 #include "line.h"           //better way to include?
 #include "rectangle.h"
 #include "freedraw.h"
+#include "polyline.h"
 
 #include <QPainter>
 #include <QPaintEvent>  //todo: sizeable grid / margins
@@ -135,6 +136,26 @@ void RenderArea::paintEvent(QPaintEvent *event)
     for(unsigned int i = 0; i < shapes.size(); i++) {
         shapes[i]->draw(&painter);
     }
+
+    switch(masterState) { //for testing
+    case Precreated: {
+        painter.drawText(10, 10, "P");
+        break;
+    }
+    case Creating: {
+        painter.drawText(10, 10, "C");
+        break;
+    }
+    case Moving: {
+        painter.drawText(10, 10, "M");
+        break;
+    }
+    case Finished: {
+        painter.drawText(10, 10, "F");
+        break;
+    }
+    }
+
 }
 //! [8]
 
@@ -176,86 +197,121 @@ void RenderArea::transformPainter(QPainter &painter)
 //! [12]
 
 void RenderArea::mousePressEvent(QMouseEvent *event) {
+    /*
     if (event->button() == Qt::LeftButton) {
         switch(shapeSelected) {
         case Ellipse: {
-            class Ellipse* cr = new class Ellipse();
-            cr->mousePressEvent(event);
-            shapes.push_back(cr);
-            activeShape = cr;
+            if(masterState == Precreated || Finished) {
+                class Ellipse* cr = new class Ellipse();
+                shapes.push_back(cr);
+                activeShape = cr;
+            }
+            else {
+                activeShape->mousePressEvent(event);
+            }
             break;
         }
         case LineShape: {
-            class Line* ln = new class Line();
-            ln->mousePressEvent(event);
-            shapes.push_back(ln);
-            activeShape = ln;
+            if(masterState == Precreated || Finished) {
+                class Line* ln = new class Line();
+                shapes.push_back(ln);
+                activeShape = ln;
+            }
             break;
-        }
+        }  //test this form of code
         case Rectangle: {
-            class Rectangle* rc = new class Rectangle();
-            rc->mousePressEvent(event);
-            shapes.push_back(rc);
-            activeShape = rc;
+            if(masterState == Precreated || Finished) {
+                class Rectangle* rc = new class Rectangle();
+                rc->mousePressEvent(event);
+                shapes.push_back(rc);
+                activeShape = rc;
+            }
             break;
         }
         case FreeDraw: {
-            class FreeDraw* fd = new class FreeDraw();
-            fd->mousePressEvent(event);
-            shapes.push_back(fd);
-            activeShape = fd;
+            if(masterState == Precreated || Finished) {
+                class FreeDraw* fd = new class FreeDraw();
+                fd->mousePressEvent(event);
+                shapes.push_back(fd);
+                activeShape = fd;
+            }
+            break;
+        }
+        case PolyLine: {
+            if(masterState == Precreated || Finished) {
+                class PolyLine* pl = new class PolyLine();
+                pl->mousePressEvent(event);
+                shapes.push_back(pl);
+                activeShape = pl;
+            }
             break;
         }
         case Select: {
-            if(activeShape) {
-                for(unsigned int i = 0; i < shapes.size(); i++) {
-                    shapes[i]->mousePressEventSelect(event);
-                }
 
-                for(unsigned int i = 0; i < shapes.size(); i++) {
-                    if(shapes[i]->isMoving) {
-                        activeShape = shapes[i];
-                    }
+            break;
+        }
+        }
+    }
+    */
+
+    if(event->button() == Qt::LeftButton) {
+        switch(shapeSelected) {
+        case LineShape: {
+            if(masterState == Finished) {
+                class Line* ln = new class Line();
+                shapes.push_back(ln);
+                activeShape = ln;
+                break;
+            }
+        }
+        case Select: {
+            activeShape->currentState = Moving;
+            activeShape->mousePressEvent(event);
+            for(int i = shapes.size() - 2; i >= 0; i--) {
+                if(!(shapes[i+1]->currentState == Moving)) { //todo: finish this logic of checking the shape "above" to see if its been moved
+                    shapes[i]->mousePressEvent(event);
                 }
             }
         }
-
+        }
+        for(int i = shapes.size() - 1; i >= 0; i--) {
+            shapes[i]->mousePressEvent(event);
+        }
+        if(activeShape) {
+            masterState = activeShape->currentState;
         }
     }
+    update();
 }
 
 void RenderArea::mouseMoveEvent(QMouseEvent *event) {
-    if(activeShape) {
-        if(shapeSelected == shapeSelect::Select) {
-            activeShape->mouseMoveEventSelect(event);
-        }
-        else {
-            activeShape->mouseMoveEvent(event);
-        }
-        update();
+    for(int i = shapes.size() - 1; i >= 0; i--) {
+        shapes[i]->mouseMoveEvent(event);
     }
+    if(activeShape) {
+        masterState = activeShape->currentState;
+    }
+    update();
 }
 
 void RenderArea::mouseReleaseEvent(QMouseEvent *event) {
-    if(activeShape) {
-        if(shapeSelected == shapeSelect::Select) {
-            activeShape->mouseReleaseEventSelect(event);
-        }
-        else {
-            activeShape->mouseReleaseEvent(event);
-        }
-        update();
+    for(int i = shapes.size() - 1; i >= 0; i--) {
+        shapes[i]->mouseReleaseEvent(event);
     }
+    if(activeShape) {
+        masterState = activeShape->currentState;
+    }
+    update();
 }
 
 void RenderArea::keyPressEvent(QKeyEvent *event) {
-    if(event->key() == Qt::Key_E) { //if needed
-
+    if(event->key() == Qt::Key_E) { //use this to cancel / finish shapes
+        masterState = Finished;
     }
 }
 
 void RenderArea::colorOpened() {
-    if(shapeSelected != shapeSelect::Select) {
+    if(shapeSelected != shapeSelect::Select) { //still not working perfectly
         activeShape = nullptr;                 //this is so the last drawn shape doesn't get changed, may want this behavior though
     }
     pen.setColor(colorDialog.getColor());

@@ -86,6 +86,10 @@ Window::Window()
     menuAction->setCheckable(true);
     shapeChosen->addAction(menuAction);
     connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(freedrawTrigger()));
+    menuAction = chooseMenu->addAction("Poly-line");
+    menuAction->setCheckable(true);
+    shapeChosen->addAction(menuAction);
+    connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(polyTrigger()));
     menuAction = chooseMenu->addAction("Select");
     menuAction->setCheckable(true);
     shapeChosen->addAction(menuAction);

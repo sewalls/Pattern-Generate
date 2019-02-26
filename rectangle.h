@@ -2,8 +2,6 @@
 #define RECTANGLE_H
 
 #include "shape.h"
-#include "vec2d.h"
-#include <QPainter>
 
 class Rectangle : public Shape
 {

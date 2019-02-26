@@ -68,7 +68,7 @@ QT_END_NAMESPACE
 
 //! [0]
 enum Operation { NoTransformation, Translate, Rotate, Scale };
-enum shapeSelect { Ellipse, LineShape, Rectangle, FreeDraw, Select };
+enum shapeSelect { Ellipse, LineShape, Rectangle, FreeDraw, PolyLine, Select };
 //! [0]
 
 //! [1]
@@ -98,6 +98,7 @@ public slots:
     void rectangleTrigger() { shapeSelected = shapeSelect::Rectangle; }
     void lineTrigger() { shapeSelected = shapeSelect::LineShape; }
     void freedrawTrigger() { shapeSelected = shapeSelect::FreeDraw; }
+    void polyTrigger() { shapeSelected = shapeSelect::PolyLine; }
     void selectTrigger() { shapeSelected = shapeSelect::Select; }
     void solidTrigger() { pen.setStyle(Qt::SolidLine); selectMode = false; }
     void dashedTrigger() { pen.setStyle(Qt::DashLine); selectMode = false; } //freedraw line is not working properly
@@ -121,6 +122,7 @@ private:
     Shape* activeShape; //fix drawing
     bool selectMode;
     QColorDialog colorDialog;
+    State masterState = Finished;
 };
 //! [2]
 

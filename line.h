@@ -2,8 +2,6 @@
 #define LINE_H
 
 #include "shape.h"
-#include "vec2d.h"
-#include <QPainter>
 
 class Line : public Shape
 {

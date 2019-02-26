@@ -16,16 +16,79 @@ void Line::draw(QPainter *painter) {
 }
 
 void Line::mousePressEvent(QMouseEvent *event) {
-    p1 = {event->localPos().x(), event->localPos().y()};
-    p2 = {event->localPos().x(), event->localPos().y()};
+    switch(currentState) {
+    case Precreated: {
+        p1 = {event->localPos().x(), event->localPos().y()};
+        p2 = {event->localPos().x(), event->localPos().y()};   //this is so that it doesn't instantly draw a line from p1 to (0, 0)
+        currentState = Creating;
+        break;
+    }
+    case Creating: {
+        currentState = Finished;
+        break;
+    }
+    case Moving: {
+        if(distanceClicked(event) < 10) {
+            movePoint = {event->localPos().x(), event->localPos().y()};
+        }
+        else {
+            currentState = Finished;
+        }
+        break;
+    }
+    case Finished: {
+
+        break;
+    }
+    }
 }
 
 void Line::mouseMoveEvent(QMouseEvent *event) {
-    p2 = {event->localPos().x(), event->localPos().y()};
+    switch(currentState) {
+    case Precreated: {
+
+        break;
+    }
+    case Creating: {
+        if(event->buttons() == Qt::LeftButton) {
+            p2 = {event->localPos().x(), event->localPos().y()};
+        }
+        break;
+    }
+    case Moving: {
+        if(event->buttons() == Qt::LeftButton)  {
+            p1.translate(event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y);
+            p2.translate(event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y);
+            movePoint = {event->localPos().x(), event->localPos().y()};
+        }
+        break;
+    }
+    case Finished: {
+
+        break;
+    }
+    }
 }
 
 void Line::mouseReleaseEvent(QMouseEvent *event) {
+    switch(currentState) {
+    case Precreated: {
 
+        break;
+    }
+    case Creating: {
+        currentState = Finished;
+        break;
+    }
+    case Moving: {
+
+        break;
+    }
+    case Finished: {
+
+        break;
+    }
+    }
 }
 
 void Line::mousePressEventSelect(QMouseEvent *event) {

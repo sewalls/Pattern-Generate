@@ -20,8 +20,21 @@ void Ellipse::draw(QPainter* painter) {
 }
 
 void Ellipse::mousePressEvent(QMouseEvent *event) {
-    p1 = {event->localPos().x(), event->localPos().y()};
-    p2 = {event->localPos().x() - p1.x, event->localPos().y() - p1.y};
+    switch(currentState) {
+    case Precreated: {
+        p1 = {event->localPos().x(), event->localPos().y()};
+        p2 = {event->localPos().x() - p1.x, event->localPos().y() - p1.y};
+        currentState = Creating;
+        break;
+    }
+    case Creating: {
+        p2 = {event->localPos().x() - p1.x, event->localPos().y() - p1.y};
+    }
+    case Moving: {
+        //need to finish slash start
+    }
+
+    }
 }
 
 void Ellipse::mouseMoveEvent(QMouseEvent *event) {
