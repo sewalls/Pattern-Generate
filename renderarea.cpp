@@ -264,19 +264,32 @@ void RenderArea::mousePressEvent(QMouseEvent *event) {
                 break;
             }
         }
+        case Rectangle: {
+            if(masterState == Finished) {
+                class Rectangle* rc = new class Rectangle();
+                shapes.push_back(rc);
+                activeShape = rc;
+                break;
+            }
+        }
         case Select: {
-            activeShape->currentState = Moving;
-            activeShape->mousePressEvent(event);
+            shapes[shapes.size() - 1]->currentState = Moving;
+            shapes[shapes.size() - 1]->mousePressEvent(event);
             for(int i = shapes.size() - 2; i >= 0; i--) {
-                if(!(shapes[i+1]->currentState == Moving)) { //todo: finish this logic of checking the shape "above" to see if its been moved
-                    shapes[i]->mousePressEvent(event);
+                if(!(shapes[i+1]->currentState == Moving)) { //this doesn't really work
+                    shapes[i]->currentState = Moving;        //can pick up multiple objects, sometimes, and they jump around
                 }
+                shapes[i]->mousePressEvent(event);
             }
         }
         }
-        for(int i = shapes.size() - 1; i >= 0; i--) {
-            shapes[i]->mousePressEvent(event);
+
+        if(shapeSelected != Select) {
+            for(int i = shapes.size() - 1; i >= 0; i--) {
+                shapes[i]->mousePressEvent(event);
+            }
         }
+
         if(activeShape) {
             masterState = activeShape->currentState;
         }

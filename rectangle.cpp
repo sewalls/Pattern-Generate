@@ -21,8 +21,33 @@ void Rectangle::draw(QPainter* painter) {
 }
 
 void Rectangle::mousePressEvent(QMouseEvent *event) {
-    p1 = {event->localPos().x(), event->localPos().y()};
-    p1 = {event->localPos().x(), event->localPos().y()};
+    switch(currentState) {
+    case Precreated: {
+        p1 = {event->localPos().x(), event->localPos().y()};
+        p2 = {event->localPos().x(), event->localPos().y()};
+        currentState = Creating;
+        break;
+    }
+    case Creating: {
+        currentState = Finished;
+        break;
+    }
+    case Moving: {
+        if((event->localPos().x() > p2.x && event->localPos().x() < p1.x) || (event->localPos().x() > p1.x && event->localPos().x() < p2.x)) {
+            if((event->localPos().y() > p2.y && event->localPos().y() < p1.y) || (event->localPos().y() > p1.y && event->localPos().y() < p2.y)) {
+                movePoint = {event->localPos().x(), event->localPos().y()};
+            }
+            else {
+                currentState = Finished;
+            }
+        }
+        break;
+    }
+    case Finished: {
+
+        break;
+    }
+    }
 }
 
 void Rectangle::mouseMoveEvent(QMouseEvent *event) {
