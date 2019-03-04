@@ -261,16 +261,40 @@ void RenderArea::mousePressEvent(QMouseEvent *event) {
                 class Line* ln = new class Line();
                 shapes.push_back(ln);
                 activeShape = ln;
-                break;
             }
+            break;
         }
         case Rectangle: {
             if(masterState == Finished) {
                 class Rectangle* rc = new class Rectangle();
                 shapes.push_back(rc);
                 activeShape = rc;
-                break;
             }
+            break;
+        }
+        case FreeDraw: {
+            if(masterState == Finished) {
+                class FreeDraw* fd = new class FreeDraw();
+                shapes.push_back(fd);
+                activeShape = fd;
+            }
+            break;
+        }
+        case Ellipse: {
+            if(masterState == Finished) {
+                class Ellipse* el = new class Ellipse();
+                shapes.push_back(el);
+                activeShape = el;
+            }
+            break;
+        }
+        case PolyLine: {
+            if(masterState == Finished) {
+                class PolyLine* pl = new class PolyLine();
+                shapes.push_back(pl);
+                activeShape = pl;
+            }
+            break;
         }
         case Select: {
             shapes[shapes.size() - 1]->currentState = Moving;
@@ -281,6 +305,8 @@ void RenderArea::mousePressEvent(QMouseEvent *event) {
                 }
                 shapes[i]->mousePressEvent(event);
             }
+
+
         }
         }
 
@@ -318,8 +344,11 @@ void RenderArea::mouseReleaseEvent(QMouseEvent *event) {
 }
 
 void RenderArea::keyPressEvent(QKeyEvent *event) {
-    if(event->key() == Qt::Key_E) { //use this to cancel / finish shapes
+    if(event->key() == Qt::Key_E) { //broken
         masterState = Finished;
+    }
+    if(event->key() == Qt::Key_C) {
+        shapes.clear();
     }
 }
 

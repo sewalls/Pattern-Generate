@@ -94,23 +94,8 @@ void Line::mouseReleaseEvent(QMouseEvent *event) {
     }
 }
 
-void Line::mousePressEventSelect(QMouseEvent *event) {
-    if(distanceClicked(event) < 10) {
-        isMoving = true;
-        movePoint = {event->localPos().x(), event->localPos().y()};
-    }
-}
+bool Line::isClickedOn(QMouseEvent* event) {
 
-void Line::mouseMoveEventSelect(QMouseEvent *event) {
-    if(isMoving) {
-        p1.translate(event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y);
-        p2.translate(event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y);
-        movePoint = {event->localPos().x(), event->localPos().y()};
-    }
-}
-
-void Line::mouseReleaseEventSelect(QMouseEvent *event) {
-    isMoving = false;
 }
 
 double Line::distanceClicked(QMouseEvent *event) {
@@ -121,7 +106,7 @@ double Line::distanceClicked(QMouseEvent *event) {
     (((p1 - p).lengthSquared() > (p2 - p).lengthSquared()) ? b = p1 - p : b = p2 - p);
 
     if(0 < t && t < 1) {
-        b = (p1 + (p2 - p1).scaled(t)) - p; //finish
+        b = (p1 + (p2 - p1).scaled(t)) - p;
     }
 
     return sqrt(b.lengthSquared());

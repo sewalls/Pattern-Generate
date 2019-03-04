@@ -39,7 +39,10 @@ void Rectangle::mousePressEvent(QMouseEvent *event) {
             }
             else {
                 currentState = Finished;
-            }
+            }                           //is this redundant?
+        }
+        else {
+            currentState = Finished;
         }
         break;
     }
@@ -51,32 +54,55 @@ void Rectangle::mousePressEvent(QMouseEvent *event) {
 }
 
 void Rectangle::mouseMoveEvent(QMouseEvent *event) {
-    p2 = {event->localPos().x(), event->localPos().y()};
+    switch(currentState) {
+    case Precreated: {
+
+        break;
+    }
+    case Creating: {
+        if(event->buttons() == Qt::LeftButton) {
+            p2 = {event->localPos().x(), event->localPos().y()};
+        }
+        break;
+    }
+    case Moving: {
+        if(event->buttons() == Qt::LeftButton)  {
+            p1.translate(event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y);
+            p2.translate(event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y);
+            movePoint = {event->localPos().x(), event->localPos().y()};
+        }
+        break;
+    }
+    case Finished: {
+
+        break;
+    }
+    }
 }
 
 void Rectangle::mouseReleaseEvent(QMouseEvent *event) {
-    p2 = {event->localPos().x(), event->localPos().y()};
-}
+    switch(currentState) {
+    case Precreated: {
 
-void Rectangle::mousePressEventSelect(QMouseEvent *event) {
-    if((event->localPos().x() > p2.x && event->localPos().x() < p1.x) || (event->localPos().x() > p1.x && event->localPos().x() < p2.x)) {
-        if((event->localPos().y() > p2.y && event->localPos().y() < p1.y) || (event->localPos().y() > p1.y && event->localPos().y() < p2.y)) {
-            isMoving = true;
-            movePoint = {event->localPos().x(), event->localPos().y()};
-        }
+        break;
+    }
+    case Creating: {
+        currentState = Finished;
+        break;
+    }
+    case Moving: {
+
+        break;
+    }
+    case Finished: {
+
+        break;
+    }
     }
 }
 
-void Rectangle::mouseMoveEventSelect(QMouseEvent *event) {
-    if(isMoving) {
-        p1.translate(event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y);
-        p2.translate(event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y);
-        movePoint = {event->localPos().x(), event->localPos().y()};
-    }
-}
+bool Rectangle::isClickedOn(QMouseEvent *event) {
 
-void Rectangle::mouseReleaseEventSelect(QMouseEvent *event) {
-    isMoving = false;
 }
 
 double Rectangle::width() {

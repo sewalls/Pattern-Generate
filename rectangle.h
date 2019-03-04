@@ -15,9 +15,7 @@ public:
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
 
-    void mouseMoveEventSelect(QMouseEvent *event) override;
-    void mousePressEventSelect(QMouseEvent *event) override;
-    void mouseReleaseEventSelect(QMouseEvent * event) override;
+    bool isClickedOn(QMouseEvent *event) override;
 
     double width();
     double height();
