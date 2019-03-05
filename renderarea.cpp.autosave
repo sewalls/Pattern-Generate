@@ -246,7 +246,7 @@ void RenderArea::mousePressEvent(QMouseEvent *event) {
         }
         case Select: {
             for(unsigned int i = 0; i < shapes.size(); i++) {
-                if(shapes[i]->isClickedOn(event)) {             //can select multiple shapes when clicking on the currently selected shape on top of a
+                if(shapes[i]->isClickedOn(event)) {             //when you have an older line on top of a younger line AND the older line is already selected, it can move multiple
                     activeShape = shapes[i];
                 }
             }
