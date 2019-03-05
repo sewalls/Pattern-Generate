@@ -247,10 +247,18 @@ void RenderArea::mousePressEvent(QMouseEvent *event) {
         case Select: {
             for(unsigned int i = 0; i < shapes.size(); i++) {
                 if(shapes[i]->isClickedOn(event)) {             //can select multiple shapes when clicking on the currently selected shape on top of a
-                    activeShape = shapes[i];
+                    setActiveShape(shapes[i]);
                 }
             }
+
             activeShape->currentState = Moving;
+            shapes.push_back(activeShape);
+
+            for(unsigned int i = 0; i < shapes.size() - 1; i++) {
+                if(activeShape == shapes[i]) {
+                    shapes.erase(shapes.begin() + i);
+                }
+            }
         }
         }
 
@@ -301,4 +309,10 @@ void RenderArea::colorOpened() {
     }
     pen.setColor(colorDialog.getColor());
 }
-0
+
+void RenderArea::setActiveShape(Shape* active) {
+    if(activeShape != active) {
+        activeShape->currentState = Finished;
+        activeShape = active;
+    }
+}

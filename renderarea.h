@@ -111,6 +111,7 @@ private:
     void drawOutline(QPainter &painter);
     void drawShape(QPainter &painter);
     void transformPainter(QPainter &painter);
+    void setActiveShape(Shape *active);
 
     QList<Operation> operations;
     QPainterPath shape;
