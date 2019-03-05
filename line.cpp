@@ -12,7 +12,10 @@ Line::Line(Vec2d p1, Vec2d p2)
 
 void Line::draw(QPainter *painter) {
     if(currentState == Moving) {
-        pen.setWidth(10);
+        pen.setWidth(10);           //for testing purposes
+    }
+    else {
+        pen.setWidth(1);
     }
     painter->setPen(pen);
     painter->drawLine(QLineF{p1.x, p1.y, p2.x, p2.y});
@@ -31,7 +34,7 @@ void Line::mousePressEvent(QMouseEvent *event) {
         break;
     }
     case Moving: {
-        if(distanceClicked(event) < 10) {
+        if(isClickedOn(event)) {
             movePoint = {event->localPos().x(), event->localPos().y()};
         }
         else {
@@ -95,7 +98,7 @@ void Line::mouseReleaseEvent(QMouseEvent *event) {
 }
 
 bool Line::isClickedOn(QMouseEvent* event) {
-
+    return distanceClicked(event) < 10;
 }
 
 double Line::distanceClicked(QMouseEvent *event) {

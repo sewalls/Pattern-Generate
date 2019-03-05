@@ -297,28 +297,23 @@ void RenderArea::mousePressEvent(QMouseEvent *event) {
             break;
         }
         case Select: {
-            shapes[shapes.size() - 1]->currentState = Moving;
-            shapes[shapes.size() - 1]->mousePressEvent(event);
-            for(int i = shapes.size() - 2; i >= 0; i--) {
-                if(!(shapes[i+1]->currentState == Moving)) { //this doesn't really work
-                    shapes[i]->currentState = Moving;        //can pick up multiple objects, sometimes, and they jump around
+            for(unsigned int i = 0; i < shapes.size(); i++) {
+                if(shapes[i]->isClickedOn(event)) {             //can select multiple shapes when clicking on the currently selected shape
+                    activeShape = shapes[i];
                 }
-                shapes[i]->mousePressEvent(event);
             }
-
-
+            activeShape->currentState = Moving;
         }
         }
 
-        if(shapeSelected != Select) {
-            for(int i = shapes.size() - 1; i >= 0; i--) {
-                shapes[i]->mousePressEvent(event);
-            }
+        for(int i = shapes.size() - 1; i >= 0; i--) {
+            shapes[i]->mousePressEvent(event);
         }
 
         if(activeShape) {
             masterState = activeShape->currentState;
         }
+        activeShape->pen.setColor(Qt::green);
     }
     update();
 }

@@ -33,13 +33,8 @@ void Rectangle::mousePressEvent(QMouseEvent *event) {
         break;
     }
     case Moving: {
-        if((event->localPos().x() > p2.x && event->localPos().x() < p1.x) || (event->localPos().x() > p1.x && event->localPos().x() < p2.x)) {
-            if((event->localPos().y() > p2.y && event->localPos().y() < p1.y) || (event->localPos().y() > p1.y && event->localPos().y() < p2.y)) {
-                movePoint = {event->localPos().x(), event->localPos().y()};
-            }
-            else {
-                currentState = Finished;
-            }                           //is this redundant?
+        if(isClickedOn(event)) {
+            movePoint = {event->localPos().x(), event->localPos().y()};
         }
         else {
             currentState = Finished;
@@ -102,7 +97,12 @@ void Rectangle::mouseReleaseEvent(QMouseEvent *event) {
 }
 
 bool Rectangle::isClickedOn(QMouseEvent *event) {
-
+    if((event->localPos().x() > p2.x && event->localPos().x() < p1.x) || (event->localPos().x() > p1.x && event->localPos().x() < p2.x)) {
+        if((event->localPos().y() > p2.y && event->localPos().y() < p1.y) || (event->localPos().y() > p1.y && event->localPos().y() < p2.y)) {
+            return true;
+        }
+    }
+    return false;
 }
 
 double Rectangle::width() {

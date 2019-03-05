@@ -27,8 +27,9 @@ public:
     bool isMoving = false;
     State currentState = Precreated;
 
+    QPen pen; //only unprotected for testing
+
 protected:
-    QPen pen;
     Vec2d movePoint;
 };
 

@@ -89,7 +89,7 @@ bool FreeDraw::isClickedOn(QMouseEvent *event) {
     Vec2d p1;
     Vec2d p2;
 
-    double distance = 100000;
+    double distance = 1000000; //arbitrarily large number for original comparison point
 
     for(int i = 0; i < path.elementCount() - 1; i++) {
         p1 = {path.elementAt(i).x, path.elementAt(i).y};
