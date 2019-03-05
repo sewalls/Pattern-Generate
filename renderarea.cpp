@@ -301,3 +301,4 @@ void RenderArea::colorOpened() {
     }
     pen.setColor(colorDialog.getColor());
 }
+0
