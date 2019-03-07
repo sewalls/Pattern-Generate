@@ -10,6 +10,12 @@ void PolyLine::draw(QPainter* painter) {
     painter->drawPath(path);
 }
 
+void PolyLine::drawSelected(QPainter* painter) {
+    pen.setStyle(Qt::DashDotLine);
+    painter->setPen(pen);
+    painter->drawPath(path);
+}
+
 void PolyLine::mousePressEvent(QMouseEvent *event) {
     switch(currentState) {
     case Precreated: {

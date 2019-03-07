@@ -17,7 +17,13 @@ Rectangle::Rectangle(Vec2d p1, double w, double h) {
 
 void Rectangle::draw(QPainter* painter) {
     painter->setPen(pen);
-    painter->drawRect(QRectF{p1.x, p1.y, width(), height()}); // is this resource inefficient?
+    painter->drawRect(QRectF{p1.x, p1.y, width(), height()});
+}
+
+void Rectangle::drawSelected(QPainter* painter) {
+    pen.setStyle(Qt::DashDotLine);
+    painter->setPen(pen);
+    painter->drawRect(QRectF{p1.x, p1.y, width(), height()});
 }
 
 void Rectangle::mousePressEvent(QMouseEvent *event) {

@@ -1,5 +1,7 @@
 #include "ellipse.h"
 
+const double pi = 3.14159;
+
 Ellipse::Ellipse() {
 
 }
@@ -15,11 +17,23 @@ Ellipse::Ellipse(Vec2d p1, double w, double h) {
 }
 
 void Ellipse::draw(QPainter* painter) {
+    std::vector<Vec2d> points = param();
+    painter->setPen(pen);
+    painter->drawEllipse(QRectF{p1.x, p1.y, p2.x - p1.x, p2.y - p1.y});
+//    for(int i = 0; i < points.size() - 1; i++) { //for testing
+//        painter->drawLine(points[i].x, points[i].y, points[i+1].x, points[i+1].y);
+//    }
+//    painter->drawLine(points[points.size() - 1].x, points[points.size() - 1].y, points[0].x, points[0].y);
+}
+
+void Ellipse::drawSelected(QPainter* painter) {
+    pen.setStyle(Qt::DashDotLine);
+    std::vector<Vec2d> points = param();
     painter->setPen(pen);
     painter->drawEllipse(QRectF{p1.x, p1.y, p2.x - p1.x, p2.y - p1.y});
 }
 
-void Ellipse::mousePressEvent(QMouseEvent *event) {
+void Ellipse::mousePressEvent(QMouseEvent* event) {
     switch(currentState) {
     case Precreated: {
         p1 = {event->localPos().x(), event->localPos().y()};
@@ -32,13 +46,11 @@ void Ellipse::mousePressEvent(QMouseEvent *event) {
         break;
     }
     case Moving: {
-        if((event->localPos().x() > p2.x && event->localPos().x() < p1.x) || (event->localPos().x() > p1.x && event->localPos().x() < p2.x)) {
-            if((event->localPos().y() > p2.y && event->localPos().y() < p1.y) || (event->localPos().y() > p1.y && event->localPos().y() < p2.y)) {
-                movePoint = {event->localPos().x(), event->localPos().y()};
-            }
-            else {
-                currentState = Finished;
-            }
+        if(isClickedOn(event)) {
+            movePoint = {event->localPos().x(), event->localPos().y()};
+        }
+        else {
+            currentState = Finished;
         }
         break;
     }
@@ -84,6 +96,7 @@ void Ellipse::mouseReleaseEvent(QMouseEvent *event) {
     }
     case Creating: {
         currentState = Finished;
+        param();
         break;
     }
     case Moving: {
@@ -97,10 +110,54 @@ void Ellipse::mouseReleaseEvent(QMouseEvent *event) {
     }
 }
 
-double Ellipse::distanceClicked(QMouseEvent *event) {
+std::vector<Vec2d> Ellipse::param() {
+    std::vector<Vec2d> points;
+    double a = (p2.x - p1.x) / 2;
+    double b = (p2.y - p1.y) / 2;
 
+    for(double t = 0; t < 2*pi; t += pi / 32) {
+        points.push_back({a*cos(t), b*sin(t)});
+    }
+    for(unsigned int i = 0; i < points.size(); i++) {
+        points[i].translate(p1.x + a, p1.y + b);
+    }
+    return points;
+}
+
+double negDotProduct(Vec2d p1, Vec2d p2) {
+    return p1.x * p2.x - p1.y * p2.y;
+}
+
+double whichSide(Vec2d p1, Vec2d p2, Vec2d q1) {    //move to a new cpp?
+    Vec2d a = {p2.y - p1.y, p2.x - p1.x};                                                       //is this the best way to do this?
+    Vec2d b = {q1.x - p1.x, q1.y - p1.y};                                                       //this is for contained polygons, even connected polygons will have many lines to go through
+
+    return negDotProduct(a, b);
+}
+
+bool lineSegsIntersect(Vec2d p1, Vec2d p2, Vec2d q1, Vec2d q2) {
+    return ((whichSide(p1, p2, q1) * (whichSide(p1, p2, q2)) < 0) && ((whichSide(q1, q2, p1)) * (whichSide(q1, q2, p2)) < 0));
 }
 
 bool Ellipse::isClickedOn(QMouseEvent *event) {
+    std::vector<Vec2d> points = param();
+    Vec2d u = {event->localPos().x(), event->localPos().y()};
+    Vec2d v = {event->localPos().x() + 10000, event->localPos().y()};
 
+    int count = 0;
+
+    if(lineSegsIntersect(u, v, points[points.size() - 1], points[0])) {
+        count++;
+    }
+
+    for(unsigned int i = 0; i < points.size() - 1; i++) {
+        if(lineSegsIntersect(u, v, points[i], points[i+1])) {
+            count++;
+        }
+    }
+
+
+
+    return count % 2;
 }
+

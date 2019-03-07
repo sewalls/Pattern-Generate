@@ -134,7 +134,13 @@ void RenderArea::paintEvent(QPaintEvent *event)
     }
 
     for(unsigned int i = 0; i < shapes.size(); i++) {
-        shapes[i]->draw(&painter);
+        if(shapes[i] != activeShape) {
+            shapes[i]->draw(&painter);
+        }
+    }
+
+    if(activeShape) { //revise this
+        activeShape->drawSelected(&painter);
     }
 
     switch(masterState) { //for testing
@@ -244,9 +250,10 @@ void RenderArea::mousePressEvent(QMouseEvent *event) {
             }
             break;
         }
+
         case Select: {
             for(unsigned int i = 0; i < shapes.size(); i++) {
-                if(shapes[i]->isClickedOn(event)) {             //can select multiple shapes when clicking on the currently selected shape on top of a
+                if(shapes[i]->isClickedOn(event)) {
                     setActiveShape(shapes[i]);
                 }
             }

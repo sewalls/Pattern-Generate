@@ -9,6 +9,7 @@ public:
     FreeDraw();
 
     void draw(QPainter* painter) override;
+    void drawSelected(QPainter* painter) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;

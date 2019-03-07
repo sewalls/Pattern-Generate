@@ -10,6 +10,12 @@ void FreeDraw::draw(QPainter* painter) {
     painter->drawPath(path);
 }
 
+void FreeDraw::drawSelected(QPainter* painter) {
+    pen.setStyle(Qt::DashDotLine);
+    painter->setPen(pen);
+    painter->drawPath(path);
+}
+
 void FreeDraw::mousePressEvent(QMouseEvent *event) {
     switch(currentState) {
     case Precreated: {

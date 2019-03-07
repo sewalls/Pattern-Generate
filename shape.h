@@ -10,13 +10,13 @@ enum State { Precreated, Creating, Moving, Finished }; //change name potentially
 
 class QPainter;
 
-class Shape  //todo: add triangle class, use painter path, should be easy
+class Shape
 {
 public:
     Shape();
 
     virtual void draw(QPainter* painter) = 0;
-//    virtual void drawSelected(QPainter* painter) = 0;
+    virtual void drawSelected(QPainter* painter) = 0;
     virtual void mousePressEvent(QMouseEvent *event) = 0;
     virtual void mouseMoveEvent(QMouseEvent *event) = 0;
     virtual void mouseReleaseEvent(QMouseEvent *event) = 0;
@@ -27,9 +27,8 @@ public:
     bool isMoving = false;
     State currentState = Precreated;
 
-    QPen pen; //only unprotected for testing
-
 protected:
+    QPen pen;
     Vec2d movePoint;
 };
 
