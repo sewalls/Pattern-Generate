@@ -111,10 +111,15 @@ Window::Window()
     penChosen->addAction(menuAction);
     connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(dottedTrigger()));
 
-    menuAction = menuBar->addAction("Color");
-    connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(colorOpened()));
-
-
+    chooseMenu = menuBar->addMenu("Color");
+    menuAction = chooseMenu->addAction("Choose Pen Color");
+    menuAction->setCheckable(true);
+    penChosen->addAction(menuAction);
+    connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(colorPenOpened()));
+    menuAction = chooseMenu->addAction("Choose Brush Color");
+    menuAction->setCheckable(true);
+    penChosen->addAction(menuAction);
+    connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(colorBrushOpened()));
 
     this->layout()->setMenuBar(menuBar);
 

@@ -3,7 +3,6 @@
 
 #include <QMouseEvent>
 #include <QPainter>
-#include <QPen>
 #include <vec2d.h>
 
 enum State { Precreated, Creating, Moving, Finished }; //change name potentially
@@ -22,13 +21,15 @@ public:
     virtual void mouseReleaseEvent(QMouseEvent *event) = 0;
 
     virtual void changePen(QPen pen) {this->pen = pen;}
+    virtual void changeBrush(QBrush brush) {this->brush = brush;}
     virtual bool isClickedOn(QMouseEvent *event) = 0;
 
     bool isMoving = false;
     State currentState = Precreated;
 
-protected:
+//protected:
     QPen pen;
+    QBrush brush;
     Vec2d movePoint;
 };
 

@@ -6,6 +6,7 @@ FreeDraw::FreeDraw()
 }
 
 void FreeDraw::draw(QPainter* painter) {
+    pen.setStyle(Qt::SolidLine);
     painter->setPen(pen);
     painter->drawPath(path);
 }

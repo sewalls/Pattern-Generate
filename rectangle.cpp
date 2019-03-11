@@ -16,8 +16,12 @@ Rectangle::Rectangle(Vec2d p1, double w, double h) {
 }
 
 void Rectangle::draw(QPainter* painter) {
+    pen.setStyle(Qt::SolidLine);
+    brush.setStyle(Qt::SolidPattern);
+    painter->setBrush(brush);
     painter->setPen(pen);
     painter->drawRect(QRectF{p1.x, p1.y, width(), height()});
+    painter->fillRect(p1.x, p1.y, width(), height(), brush);
 }
 
 void Rectangle::drawSelected(QPainter* painter) {

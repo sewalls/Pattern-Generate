@@ -103,7 +103,8 @@ public slots:
     void solidTrigger() { pen.setStyle(Qt::SolidLine); selectMode = false; }
     void dashedTrigger() { pen.setStyle(Qt::DashLine); selectMode = false; } //freedraw line is not working properly
     void dottedTrigger()  { pen.setStyle(Qt::DotLine); selectMode = false; }
-    void colorOpened();
+    void colorPenOpened();
+    void colorBrushOpened();
 
 //! [2]
 private:
@@ -120,6 +121,7 @@ private:
     std::vector<Shape*> shapes;
     shapeSelect shapeSelected;
     QPen pen;
+    QBrush brush;
     Shape* activeShape; //fix drawing
     bool selectMode;
     QColorDialog colorDialog;

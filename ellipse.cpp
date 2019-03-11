@@ -17,6 +17,7 @@ Ellipse::Ellipse(Vec2d p1, double w, double h) {
 }
 
 void Ellipse::draw(QPainter* painter) {
+    pen.setStyle(Qt::SolidLine);
     std::vector<Vec2d> points = param();
     painter->setPen(pen);
     painter->drawEllipse(QRectF{p1.x, p1.y, p2.x - p1.x, p2.y - p1.y});

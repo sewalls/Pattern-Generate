@@ -111,26 +111,9 @@ void RenderArea::paintEvent(QPaintEvent *event)
     painter.setRenderHint(QPainter::Antialiasing);
     //    painter.fillRect(event->rect(), QBrush(Qt::white));
 
-
-    //    painter.translate(66, 66);
-    //! [5]
-
-    //! [6]
-    painter.save();                 //saves painter state, because following functions might change it
-    //    transformPainter(painter);
-    drawShape(painter);
-    painter.restore();
-    //! [6]
-
-    //! [7]
-    drawOutline(painter);
-    //! [7]
-
-    //! [8]
-    transformPainter(painter);
-
     if(activeShape) {
         activeShape->changePen(pen);   //default shape?
+        activeShape->changeBrush(brush);
     }
 
     for(unsigned int i = 0; i < shapes.size(); i++) {
@@ -310,11 +293,17 @@ void RenderArea::keyPressEvent(QKeyEvent *event) {
     }
 }
 
-void RenderArea::colorOpened() {
-    if(shapeSelected != shapeSelect::Select) { //still not working perfectly
-        activeShape = nullptr;                 //this is so the last drawn shape doesn't get changed, may want this behavior though
-    }
-    pen.setColor(colorDialog.getColor());
+void RenderArea::colorPenOpened() {           //todo: set it to update asap
+    QColorDialog options;
+    options.setOption(QColorDialog::ShowAlphaChannel);
+    brush.setColor(colorDialog.getColor(Qt::black, this, "Pick a Brush Color", options.options()));  //theres certainly a better way to do this
+}
+
+
+void RenderArea::colorBrushOpened() {           //todo: set it to update asap
+    QColorDialog options;
+    options.setOption(QColorDialog::ShowAlphaChannel);
+    brush.setColor(colorDialog.getColor(Qt::transparent, this, "Pick a Fill Color", options.options()));  //theres certainly a better way to do this
 }
 
 void RenderArea::setActiveShape(Shape* active) {
