@@ -77,7 +77,7 @@ void Line::mouseMoveEvent(QMouseEvent *event) {
     }
 }
 
-void Line::mouseReleaseEvent(QMouseEvent *event) {
+void Line::mouseReleaseEvent(__attribute__((unused))QMouseEvent *event) { //currently marked unused to silence warnings
     switch(currentState) {
     case Precreated: {
 

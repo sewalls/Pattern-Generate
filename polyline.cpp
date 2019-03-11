@@ -7,14 +7,18 @@ PolyLine::PolyLine()
 
 void PolyLine::draw(QPainter* painter) {
     pen.setStyle(Qt::SolidLine);
+    brush.setStyle(Qt::SolidPattern);
     painter->setPen(pen);
     painter->drawPath(path);
+    painter->fillPath(path, brush);
 }
 
 void PolyLine::drawSelected(QPainter* painter) {
     pen.setStyle(Qt::DashDotLine);
+    brush.setStyle(Qt::SolidPattern);
     painter->setPen(pen);
     painter->drawPath(path);
+    painter->fillPath(path, brush);
 }
 
 void PolyLine::mousePressEvent(QMouseEvent *event) {
@@ -25,8 +29,8 @@ void PolyLine::mousePressEvent(QMouseEvent *event) {
         break;
     }
     case Creating: {
-        if(abs(event->localPos().x() - path.elementAt(0).x) < 5 ||
-                abs(event->localPos().y() - path.elementAt(0).y) < 5) {
+        if(std::abs(event->localPos().x() - path.elementAt(0).x) < 5 ||
+                std::abs(event->localPos().y() - path.elementAt(0).y) < 5) {
             path.closeSubpath();
             currentState = Finished;
         }
@@ -73,7 +77,7 @@ void PolyLine::mouseMoveEvent(QMouseEvent *event) {
     }
 }
 
-void PolyLine::mouseReleaseEvent(QMouseEvent *event) {
+void PolyLine::mouseReleaseEvent(__attribute__((unused))QMouseEvent *event) { //currently marked unused to silence warnings
     switch(currentState) {
     case Precreated: {
 

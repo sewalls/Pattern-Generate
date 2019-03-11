@@ -21,11 +21,12 @@ void Rectangle::draw(QPainter* painter) {
     painter->setBrush(brush);
     painter->setPen(pen);
     painter->drawRect(QRectF{p1.x, p1.y, width(), height()});
-    painter->fillRect(p1.x, p1.y, width(), height(), brush);
 }
 
 void Rectangle::drawSelected(QPainter* painter) {
     pen.setStyle(Qt::DashDotLine);
+    brush.setStyle(Qt::SolidPattern);
+    painter->setBrush(brush);
     painter->setPen(pen);
     painter->drawRect(QRectF{p1.x, p1.y, width(), height()});
 }
@@ -85,7 +86,7 @@ void Rectangle::mouseMoveEvent(QMouseEvent *event) {
     }
 }
 
-void Rectangle::mouseReleaseEvent(QMouseEvent *event) {
+void Rectangle::mouseReleaseEvent(__attribute__((unused))QMouseEvent *event) { //currently marked unused to silence warnings
     switch(currentState) {
     case Precreated: {
 

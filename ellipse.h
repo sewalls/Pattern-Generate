@@ -17,6 +17,7 @@ public:
     void mouseReleaseEvent(QMouseEvent *event) override;
 
     bool isClickedOn(QMouseEvent *event) override;
+
     std::vector<Vec2d> param();
 
 private:

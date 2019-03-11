@@ -77,7 +77,7 @@ class RenderArea : public QWidget
     Q_OBJECT
 
 public:
-    RenderArea(QWidget *parent = 0);
+    RenderArea(QWidget *parent = nullptr);
 
     void setOperations(const QList<Operation> &operations);
     void setShape(const QPainterPath &shape);
@@ -101,7 +101,7 @@ public slots:
     void polyTrigger() { shapeSelected = shapeSelect::PolyLine; }
     void selectTrigger() { shapeSelected = shapeSelect::Select; }
     void solidTrigger() { pen.setStyle(Qt::SolidLine); selectMode = false; }
-    void dashedTrigger() { pen.setStyle(Qt::DashLine); selectMode = false; } //freedraw line is not working properly
+    void dashedTrigger() { pen.setStyle(Qt::DashLine); selectMode = false; }
     void dottedTrigger()  { pen.setStyle(Qt::DotLine); selectMode = false; }
     void colorPenOpened();
     void colorBrushOpened();
@@ -113,6 +113,7 @@ private:
     void drawShape(QPainter &painter);
     void transformPainter(QPainter &painter);
     void setActiveShape(Shape *active);
+    bool anyShapeClicked(QMouseEvent *event);
 
     QList<Operation> operations;
     QPainterPath shape;

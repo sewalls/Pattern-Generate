@@ -4,3 +4,7 @@ Shape::Shape()
 {
 
 }
+
+Shape::~Shape() {
+
+}

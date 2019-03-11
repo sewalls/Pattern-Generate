@@ -13,6 +13,7 @@ class Shape
 {
 public:
     Shape();
+    virtual ~Shape() = 0;
 
     virtual void draw(QPainter* painter) = 0;
     virtual void drawSelected(QPainter* painter) = 0;

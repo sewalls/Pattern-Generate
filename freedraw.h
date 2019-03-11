@@ -14,7 +14,7 @@ public:
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
 
-    bool clickedIn(QMouseEvent *event); //still not wholly accurate
+    bool clickedIn(QMouseEvent *event);
     bool isClickedOn(QMouseEvent *event) override;
 
 private:

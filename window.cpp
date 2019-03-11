@@ -60,7 +60,7 @@ Window::Window()
     this->setStyleSheet("background-color: white;"); //white menu bar?
 
     QVBoxLayout *boxLayout = new QVBoxLayout(this);
-    boxLayout->addWidget(originalRenderArea, 0, 0);
+    boxLayout->addWidget(originalRenderArea, 0, nullptr);
 
     QMenuBar *menuBar = new QMenuBar;
     QMenu *chooseMenu = new QMenu;
@@ -113,11 +113,9 @@ Window::Window()
 
     chooseMenu = menuBar->addMenu("Color");
     menuAction = chooseMenu->addAction("Choose Pen Color");
-    menuAction->setCheckable(true);
     penChosen->addAction(menuAction);
     connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(colorPenOpened()));
     menuAction = chooseMenu->addAction("Choose Brush Color");
-    menuAction->setCheckable(true);
     penChosen->addAction(menuAction);
     connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(colorBrushOpened()));
 

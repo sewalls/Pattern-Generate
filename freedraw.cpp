@@ -44,7 +44,7 @@ void FreeDraw::mousePressEvent(QMouseEvent *event) {
     }
 }
 
-void FreeDraw::mouseMoveEvent(QMouseEvent *event) { //click to click vs click and hold, figure out how to separate these two
+void FreeDraw::mouseMoveEvent(QMouseEvent *event) {
     switch(currentState) {
     case Precreated: {
 
@@ -69,7 +69,7 @@ void FreeDraw::mouseMoveEvent(QMouseEvent *event) { //click to click vs click an
     }
 }
 
-void FreeDraw::mouseReleaseEvent(QMouseEvent *event) {
+void FreeDraw::mouseReleaseEvent(__attribute__((unused))QMouseEvent *event) { //currently marked unused to silence warnings
     switch(currentState) {
     case Precreated: {
 

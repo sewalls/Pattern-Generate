@@ -17,19 +17,23 @@ Ellipse::Ellipse(Vec2d p1, double w, double h) {
 }
 
 void Ellipse::draw(QPainter* painter) {
-    pen.setStyle(Qt::SolidLine);
     std::vector<Vec2d> points = param();
+    pen.setStyle(Qt::SolidLine);
+    brush.setStyle(Qt::SolidPattern);
+    painter->setBrush(brush);
     painter->setPen(pen);
     painter->drawEllipse(QRectF{p1.x, p1.y, p2.x - p1.x, p2.y - p1.y});
-//    for(int i = 0; i < points.size() - 1; i++) { //for testing
-//        painter->drawLine(points[i].x, points[i].y, points[i+1].x, points[i+1].y);
-//    }
-//    painter->drawLine(points[points.size() - 1].x, points[points.size() - 1].y, points[0].x, points[0].y);
+    //    for(int i = 0; i < points.size() - 1; i++) { //for testing
+    //        painter->drawLine(points[i].x, points[i].y, points[i+1].x, points[i+1].y);
+    //    }
+    //    painter->drawLine(points[points.size() - 1].x, points[points.size() - 1].y, points[0].x, points[0].y);
 }
 
 void Ellipse::drawSelected(QPainter* painter) {
-    pen.setStyle(Qt::DashDotLine);
     std::vector<Vec2d> points = param();
+    pen.setStyle(Qt::DashDotLine);
+    brush.setStyle(Qt::SolidPattern);
+    painter->setBrush(brush);
     painter->setPen(pen);
     painter->drawEllipse(QRectF{p1.x, p1.y, p2.x - p1.x, p2.y - p1.y});
 }
@@ -89,7 +93,7 @@ void Ellipse::mouseMoveEvent(QMouseEvent *event) {
     }
 }
 
-void Ellipse::mouseReleaseEvent(QMouseEvent *event) {
+void Ellipse::mouseReleaseEvent(__attribute__((unused))QMouseEvent *event) { //currently marked unused to silence warnings
     switch(currentState) {
     case Precreated: {
 
