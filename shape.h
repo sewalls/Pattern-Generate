@@ -2,8 +2,9 @@
 #define SHAPE_H
 
 #include <QMouseEvent>
+#include <math.h>
 #include <QPainter>
-#include <vec2d.h>
+#include "vec2d.h"
 
 enum State { Precreated, Creating, Moving, Finished }; //change name potentially
 
@@ -16,7 +17,6 @@ public:
     virtual ~Shape() = 0;
 
     virtual void draw(QPainter* painter) = 0;
-    virtual void drawSelected(QPainter* painter) = 0;
     virtual void mousePressEvent(QMouseEvent *event) = 0;
     virtual void mouseMoveEvent(QMouseEvent *event) = 0;
     virtual void mouseReleaseEvent(QMouseEvent *event) = 0;
@@ -25,6 +25,8 @@ public:
     virtual void changeBrush(QBrush brush) {this->brush = brush;}
     virtual bool isClickedOn(QMouseEvent *event) = 0;
 
+    virtual void translate(Vec2d translateBy) = 0;
+
     bool isMoving = false;
     State currentState = Precreated;
 
@@ -32,6 +34,7 @@ public:
     QPen pen;
     QBrush brush;
     Vec2d movePoint;
+    unsigned int order;
 };
 
 #endif // SHAPE_H

@@ -18,24 +18,27 @@ Ellipse::Ellipse(Vec2d p1, double w, double h) {
 
 void Ellipse::draw(QPainter* painter) {
     std::vector<Vec2d> points = param();
-    pen.setStyle(Qt::SolidLine);
     brush.setStyle(Qt::SolidPattern);
     painter->setBrush(brush);
     painter->setPen(pen);
+    //    Vec2d newP1 = {p1.x - 800, p1.y - 400};
+    //    Vec2d newP2 = {p2.x - 800, p2.y - 400};
+    ////    Vec2d newP1 = {fmod(p1.x, 800), fmod(p1.y, 400)};
+    ////    Vec2d newP2 = {p2.x - p1.x, p2.y - p1.y};
+    //    for(unsigned int i = 1; i <= 8; i++) { //these can be determined by screen height and width
+    //        for(unsigned int j = 1; j <= 5; j++) {
+    //            painter->drawEllipse(QRectF{newP1.x, newP1.y, newP2.x - newP1.x, newP2.y - newP1.y});
+    //            newP1.translate(0, 200);
+    //            newP2.translate(0, 200);
+    //        }
+    //        newP1.translate(200, -1000);
+    //        newP2.translate(200, -1000);
+    //    }
     painter->drawEllipse(QRectF{p1.x, p1.y, p2.x - p1.x, p2.y - p1.y});
     //    for(int i = 0; i < points.size() - 1; i++) { //for testing
     //        painter->drawLine(points[i].x, points[i].y, points[i+1].x, points[i+1].y);
     //    }
     //    painter->drawLine(points[points.size() - 1].x, points[points.size() - 1].y, points[0].x, points[0].y);
-}
-
-void Ellipse::drawSelected(QPainter* painter) {
-    std::vector<Vec2d> points = param();
-    pen.setStyle(Qt::DashDotLine);
-    brush.setStyle(Qt::SolidPattern);
-    painter->setBrush(brush);
-    painter->setPen(pen);
-    painter->drawEllipse(QRectF{p1.x, p1.y, p2.x - p1.x, p2.y - p1.y});
 }
 
 void Ellipse::mousePressEvent(QMouseEvent* event) {
@@ -80,8 +83,7 @@ void Ellipse::mouseMoveEvent(QMouseEvent *event) {
     }
     case Moving: {
         if(event->buttons() == Qt::LeftButton)  {
-            p1.translate(event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y);
-            p2.translate(event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y);
+            translate({event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y});
             movePoint = {event->localPos().x(), event->localPos().y()};
         }
         break;
@@ -129,6 +131,11 @@ std::vector<Vec2d> Ellipse::param() {
     return points;
 }
 
+void Ellipse::translate(Vec2d translateBy) {
+    p1.translate(translateBy.x, translateBy.y);
+    p2.translate(translateBy.x, translateBy.y);
+}
+
 double negDotProduct(Vec2d p1, Vec2d p2) {
     return p1.x * p2.x - p1.y * p2.y;
 }
@@ -160,8 +167,6 @@ bool Ellipse::isClickedOn(QMouseEvent *event) {
             count++;
         }
     }
-
-
 
     return count % 2;
 }

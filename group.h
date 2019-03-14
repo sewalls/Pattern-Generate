@@ -1,14 +1,14 @@
-#ifndef ELLIPSE_H
-#define ELLIPSE_H
+#ifndef GROUP_H
+#define GROUP_H
 
 #include "shape.h"
+#include <vector>
+#include <memory>
 
-class Ellipse : public Shape
+class Group : public Shape
 {
 public:
-    Ellipse();
-    Ellipse(Vec2d p1, Vec2d p2);
-    Ellipse(Vec2d p1, double w, double h);
+    Group();
 
     void draw(QPainter* painter) override;
     void mousePressEvent(QMouseEvent *event) override;
@@ -16,13 +16,10 @@ public:
     void mouseReleaseEvent(QMouseEvent *event) override;
 
     bool isClickedOn(QMouseEvent *event) override;
+
     void translate(Vec2d translateBy) override;
 
-    std::vector<Vec2d> param();
-
-private:
-    Vec2d p1;
-    Vec2d p2;
+    std::vector<std::unique_ptr<Shape>> childShapes;
 };
 
-#endif // ELLIPSE_H
+#endif // GROUP_H

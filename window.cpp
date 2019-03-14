@@ -96,20 +96,20 @@ Window::Window()
     connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(selectTrigger()));
     //is this efficient?
 
-    chooseMenu = menuBar->addMenu("Pen");
-    menuAction = chooseMenu->addAction("Solid");
-    menuAction->setCheckable(true);
-    penChosen->addAction(menuAction);
-    connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(solidTrigger()));
-    menuAction->trigger();
-    menuAction = chooseMenu->addAction("Dashed");
-    menuAction->setCheckable(true);
-    penChosen->addAction(menuAction);
-    connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(dashedTrigger()));
-    menuAction = chooseMenu->addAction("Dotted");
-    menuAction->setCheckable(true);
-    penChosen->addAction(menuAction);
-    connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(dottedTrigger()));
+//    chooseMenu = menuBar->addMenu("Pen");
+//    menuAction = chooseMenu->addAction("Solid");
+//    menuAction->setCheckable(true);
+//    penChosen->addAction(menuAction);
+//    connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(solidTrigger()));
+//    menuAction->trigger();
+//    menuAction = chooseMenu->addAction("Dashed");
+//    menuAction->setCheckable(true);
+//    penChosen->addAction(menuAction);
+//    connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(dashedTrigger()));
+//    menuAction = chooseMenu->addAction("Dotted");
+//    menuAction->setCheckable(true);
+//    penChosen->addAction(menuAction);
+//    connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(dottedTrigger()));
 
     chooseMenu = menuBar->addMenu("Color");
     menuAction = chooseMenu->addAction("Choose Pen Color");
@@ -143,7 +143,7 @@ Window::Window()
     setLayout(boxLayout);
 
     setWindowTitle(tr("Draw"));
-    setFixedSize(800, 600);
+    setFixedSize(1300, 900);
 }
 
 void Window::operationChanged()

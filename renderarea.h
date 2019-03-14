@@ -58,8 +58,10 @@
 #include <QMouseEvent>
 #include <QKeyEvent>
 #include <vector>
+#include <memory>
 #include <QColorDialog>
 #include "shape.h"
+#include "group.h"
 #include "vec2d.h"
 
 QT_BEGIN_NAMESPACE
@@ -68,7 +70,7 @@ QT_END_NAMESPACE
 
 //! [0]
 enum Operation { NoTransformation, Translate, Rotate, Scale };
-enum shapeSelect { Ellipse, LineShape, Rectangle, FreeDraw, PolyLine, Select };
+enum class shapeSelect { Ellipse, Line, Rectangle, FreeDraw, PolyLine, Select };
 //! [0]
 
 //! [1]
@@ -96,7 +98,7 @@ protected:
 public slots:
     void ellipseTrigger() { shapeSelected = shapeSelect::Ellipse; }
     void rectangleTrigger() { shapeSelected = shapeSelect::Rectangle; }
-    void lineTrigger() { shapeSelected = shapeSelect::LineShape; }
+    void lineTrigger() { shapeSelected = shapeSelect::Line; }
     void freedrawTrigger() { shapeSelected = shapeSelect::FreeDraw; }
     void polyTrigger() { shapeSelected = shapeSelect::PolyLine; }
     void selectTrigger() { shapeSelected = shapeSelect::Select; }
@@ -114,19 +116,24 @@ private:
     void transformPainter(QPainter &painter);
     void setActiveShape(Shape *active);
     bool anyShapeClicked(QMouseEvent *event);
+    void drawTiles(QPainter &painter);
+
+    template<typename T>
+    T* addShape();
 
     QList<Operation> operations;
     QPainterPath shape;
     QRect xBoundingRect;
     QRect yBoundingRect;
-    std::vector<Shape*> shapes;
+    std::vector<std::unique_ptr<Shape>> shapes;
+    Shape* activeShape;
     shapeSelect shapeSelected;
     QPen pen;
     QBrush brush;
-    Shape* activeShape; //fix drawing
     bool selectMode;
     QColorDialog colorDialog;
     State masterState = Finished;
+    std::unique_ptr<Group> selectGroup;
 };
 //! [2]
 

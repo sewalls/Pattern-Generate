@@ -1,71 +1,26 @@
-/****************************************************************************
-**
-** Copyright (C) 2016 The Qt Company Ltd.
-** Contact: https://www.qt.io/licensing/
-**
-** This file is part of the examples of the Qt Toolkit.
-**
-** $QT_BEGIN_LICENSE:BSD$
-** Commercial License Usage
-** Licensees holding valid commercial Qt licenses may use this file in
-** accordance with the commercial license agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see https://www.qt.io/terms-conditions. For further
-** information use the contact form at https://www.qt.io/contact-us.
-**
-** BSD License Usage
-** Alternatively, you may use this file under the terms of the BSD license
-** as follows:
-**
-** "Redistribution and use in source and binary forms, with or without
-** modification, are permitted provided that the following conditions are
-** met:
-**   * Redistributions of source code must retain the above copyright
-**     notice, this list of conditions and the following disclaimer.
-**   * Redistributions in binary form must reproduce the above copyright
-**     notice, this list of conditions and the following disclaimer in
-**     the documentation and/or other materials provided with the
-**     distribution.
-**   * Neither the name of The Qt Company Ltd nor the names of its
-**     contributors may be used to endorse or promote products derived
-**     from this software without specific prior written permission.
-**
-**
-** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-** "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-** LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-** A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-** OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-** SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-** LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-** DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-** THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-** (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
-**
-** $QT_END_LICENSE$
-**
-****************************************************************************/
-
 #include "renderarea.h"
 #include "ellipse.h"
 #include "line.h"           //better way to include?
 #include "rectangle.h"
 #include "freedraw.h"
 #include "polyline.h"
+#include "group.h"
 
 #include <QPainter>
 #include <QPaintEvent>  //todo: sizeable grid / margins
+#include <algorithm>
 
 //! [0]
 RenderArea::RenderArea(QWidget *parent)
-    : QWidget(parent)
+    : QWidget(parent), selectGroup{new Group}
 {
     QFont newFont = font();
     newFont.setPixelSize(12);
     setFont(newFont);
     activeShape = nullptr;
+
+    setFocusPolicy(Qt::StrongFocus);
+    setFocus();
 
     QFontMetrics fontMetrics(newFont);
     xBoundingRect = fontMetrics.boundingRect(tr("x"));
@@ -111,17 +66,27 @@ void RenderArea::paintEvent(__attribute__((unused))QPaintEvent *event) //current
     QPainter painter(this);
 
     painter.setRenderHint(QPainter::Antialiasing);
+    painter.drawRect(550, 350, 200, 200);
     //    painter.fillRect(event->rect(), QBrush(Qt::white));
 
-    for(unsigned int i = 0; i < shapes.size(); i++) {
-        if(shapes[i] != activeShape) {
-            shapes[i]->draw(&painter);
-        }
-    }
+    //    for(unsigned int i = 0; i < shapes.size(); i++) {
+    //        if(shapes[i] != activeShape) {
+    //            shapes[i]->pen.setStyle(Qt::SolidLine);
+    //            shapes[i]->draw(&painter);
+    //        }
+    //    }
 
-    if(activeShape) { //revise this
-        activeShape->drawSelected(&painter);
+    //    if(activeShape) { //revise this
+    //        activeShape->pen.setStyle(Qt::DotLine);
+    //        activeShape->draw(&painter);
+    //    }
+
+    for(unsigned int i = 0; i < shapes.size(); i++) {
+        shapes[i]->draw(&painter);
     }
+    selectGroup->draw(&painter);
+
+    drawTiles(painter);
 
     switch(masterState) { //for testing
     case Precreated: {
@@ -143,7 +108,7 @@ void RenderArea::paintEvent(__attribute__((unused))QPaintEvent *event) //current
     }
 
     for(unsigned int i = 0; i < shapes.size(); i++) {
-        if(activeShape == shapes[i]) {
+        if(activeShape == shapes[i].get()) {
             painter.drawText(20, 10, QString::fromStdString(std::to_string(i)));
         }
     }
@@ -190,70 +155,59 @@ void RenderArea::transformPainter(QPainter &painter)
 void RenderArea::mousePressEvent(QMouseEvent *event) {
     if(event->button() == Qt::LeftButton) {
         switch(shapeSelected) {
-        case LineShape: {
+        case shapeSelect::Line: {
             if(masterState == Finished) {
-                class Line* ln = new class Line();
-                shapes.push_back(ln);
-                ln->changePen(pen);
-                activeShape = ln;
+                addShape<Line>();
             }
             break;
         }
-        case Rectangle: {
+        case shapeSelect::Rectangle: {
             if(masterState == Finished) {
-                class Rectangle* rc = new class Rectangle();
-                shapes.push_back(rc);
-                rc->changePen(pen);
-                rc->changeBrush(brush);
-                activeShape = rc;
+                addShape<Rectangle>();
             }
             break;
         }
-        case FreeDraw: {
+        case shapeSelect::FreeDraw: {
             if(masterState == Finished) {
-                class FreeDraw* fd = new class FreeDraw();
-                shapes.push_back(fd);
-                fd->changePen(pen);
-                activeShape = fd;
+                addShape<FreeDraw>();
             }
             break;
         }
-        case Ellipse: {
+        case shapeSelect::Ellipse: {
             if(masterState == Finished) {
-                class Ellipse* el = new class Ellipse();
-                shapes.push_back(el);
-                el->changePen(pen);
-                el->changeBrush(brush);
-                activeShape = el;
+                addShape<Ellipse>();
             }
             break;
         }
-        case PolyLine: {
+        case shapeSelect::PolyLine: {
             if(masterState == Finished) {
-                class PolyLine* pl = new class PolyLine();
-                shapes.push_back(pl);
-                pl->changePen(pen);
-                pl->changeBrush(brush);
-                activeShape = pl;
+                addShape<PolyLine>();
             }
             break;
         }
 
-        case Select: {
+        case shapeSelect::Select: {
             if(anyShapeClicked(event)) {
-                for(unsigned int i = 0; i < shapes.size(); i++) {
-                    if(shapes[i]->isClickedOn(event)) {
-                        setActiveShape(shapes[i]);
+                if(event->modifiers() == Qt::ShiftModifier) {
+                    setActiveShape(selectGroup.get());
+                    for(unsigned int i = 0; i < shapes.size(); i++) {
+                        if(shapes[i]->isClickedOn(event)) {
+                            selectGroup->childShapes.push_back(std::move(shapes[i]));
+                            shapes.erase(shapes.begin() + i);
+                        }
+                    }
+                }
+                //perhaps I could arrange this better, the if else may not be necessary
+                else {
+                    for(unsigned int i = 0; i < shapes.size(); i++) {
+                        if(shapes[i]->isClickedOn(event)) {
+                            setActiveShape(shapes[i].get());
+                        }
                     }
                 }
 
-                activeShape->currentState = Moving;
-                shapes.push_back(activeShape);
-
-                for(unsigned int i = 0; i < shapes.size() - 1; i++) {
-                    if(activeShape == shapes[i]) {
-                        shapes.erase(shapes.begin() + i);
-                    }
+                if(activeShape) {
+                    activeShape->currentState = Moving;
                 }
             }
             else {
@@ -269,7 +223,6 @@ void RenderArea::mousePressEvent(QMouseEvent *event) {
         if(activeShape) {
             masterState = activeShape->currentState;
         }
-
     }
     update();
 }
@@ -295,24 +248,25 @@ void RenderArea::mouseReleaseEvent(QMouseEvent *event) {
 }
 
 void RenderArea::keyPressEvent(QKeyEvent *event) {
-    if(event->key() == Qt::Key_E) { //broken
+    if(event->key() == Qt::Key_E) {
         masterState = Finished;
     }
     if(event->key() == Qt::Key_C) {
         shapes.clear();
+        update();
     }
 }
 
-void RenderArea::colorPenOpened() {           //todo: set it to update asap
+void RenderArea::colorPenOpened() {
     QColorDialog options;
     options.setOption(QColorDialog::ShowAlphaChannel);
-    brush.setColor(colorDialog.getColor(Qt::black, this, "Pick a Pen Color", options.options()));  //theres certainly a better way to do this
+    pen.setColor(colorDialog.getColor(Qt::black, this, "Pick a Pen Color", options.options()));  //theres certainly a better way to do this
     if(activeShape) {
         activeShape->changePen(pen);
     }
 }
 
-void RenderArea::colorBrushOpened() {           //todo: set it to update asap
+void RenderArea::colorBrushOpened() {
     QColorDialog options;
     options.setOption(QColorDialog::ShowAlphaChannel);
     brush.setColor(colorDialog.getColor(Qt::white, this, "Pick a Fill Color", options.options()));
@@ -338,4 +292,21 @@ bool RenderArea::anyShapeClicked(QMouseEvent *event) {
         }
     }
     return anyClicked;
+}
+
+void RenderArea::drawTiles(QPainter &painter) {
+    for(unsigned int i = 0; i < shapes.size(); i++) {
+
+    }
+}
+
+template<typename T>
+T* RenderArea::addShape() {
+    std::unique_ptr<Shape> shape{new T};
+    shape->changePen(pen);
+    shape->changeBrush(brush);
+    activeShape = shape.get();
+    activeShape->order = shapes.size();
+    shapes.push_back(std::move(shape));
+    return static_cast<T*>(activeShape);
 }

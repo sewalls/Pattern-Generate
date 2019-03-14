@@ -13,14 +13,6 @@ void PolyLine::draw(QPainter* painter) {
     painter->fillPath(path, brush);
 }
 
-void PolyLine::drawSelected(QPainter* painter) {
-    pen.setStyle(Qt::DashDotLine);
-    brush.setStyle(Qt::SolidPattern);
-    painter->setPen(pen);
-    painter->drawPath(path);
-    painter->fillPath(path, brush);
-}
-
 void PolyLine::mousePressEvent(QMouseEvent *event) {
     switch(currentState) {
     case Precreated: {
@@ -66,7 +58,7 @@ void PolyLine::mouseMoveEvent(QMouseEvent *event) {
         break;
     }
     case Moving: {
-        path.translate(event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y);
+        translate({event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y});
         movePoint = {event->localPos().x(), event->localPos().y()};
         break;
     }
@@ -130,4 +122,8 @@ double PolyLine::whichSide(Vec2d p1, Vec2d p2, Vec2d q1) {
 
 bool PolyLine::lineSegsIntersect(Vec2d p1, Vec2d p2, Vec2d q1, Vec2d q2) {
     return ((whichSide(p1, p2, q1) * (whichSide(p1, p2, q2)) < 0) && ((whichSide(q1, q2, p1)) * (whichSide(q1, q2, p2)) < 0));
+}
+
+void PolyLine::translate(Vec2d translateBy) {
+    path.translate(translateBy.x, translateBy.y);
 }

@@ -11,12 +11,6 @@ void FreeDraw::draw(QPainter* painter) {
     painter->drawPath(path);
 }
 
-void FreeDraw::drawSelected(QPainter* painter) {
-    pen.setStyle(Qt::DashDotLine);
-    painter->setPen(pen);
-    painter->drawPath(path);
-}
-
 void FreeDraw::mousePressEvent(QMouseEvent *event) {
     switch(currentState) {
     case Precreated: {
@@ -58,7 +52,7 @@ void FreeDraw::mouseMoveEvent(QMouseEvent *event) {
         break;
     }
     case Moving: {
-        path.translate(event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y);
+        translate({event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y});
         movePoint = {event->localPos().x(), event->localPos().y()};
         break;
     }
@@ -118,4 +112,8 @@ bool FreeDraw::isClickedOn(QMouseEvent *event) {
         return true;
     }
     return false;
+}
+
+void FreeDraw::translate(Vec2d translateBy) {
+    path.translate(translateBy.x, translateBy.y);
 }

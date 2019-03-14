@@ -23,14 +23,6 @@ void Rectangle::draw(QPainter* painter) {
     painter->drawRect(QRectF{p1.x, p1.y, width(), height()});
 }
 
-void Rectangle::drawSelected(QPainter* painter) {
-    pen.setStyle(Qt::DashDotLine);
-    brush.setStyle(Qt::SolidPattern);
-    painter->setBrush(brush);
-    painter->setPen(pen);
-    painter->drawRect(QRectF{p1.x, p1.y, width(), height()});
-}
-
 void Rectangle::mousePressEvent(QMouseEvent *event) {
     switch(currentState) {
     case Precreated: {
@@ -73,8 +65,7 @@ void Rectangle::mouseMoveEvent(QMouseEvent *event) {
     }
     case Moving: {
         if(event->buttons() == Qt::LeftButton)  {
-            p1.translate(event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y);
-            p2.translate(event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y);
+            translate({event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y});
             movePoint = {event->localPos().x(), event->localPos().y()};
         }
         break;
@@ -114,6 +105,11 @@ bool Rectangle::isClickedOn(QMouseEvent *event) {
         }
     }
     return false;
+}
+
+void Rectangle::translate(Vec2d translateBy) {
+    p1.translate(translateBy.x, translateBy.y);
+    p2.translate(translateBy.x, translateBy.y);
 }
 
 double Rectangle::width() {

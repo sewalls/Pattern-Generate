@@ -9,13 +9,13 @@ public:
     FreeDraw();
 
     void draw(QPainter* painter) override;
-    void drawSelected(QPainter* painter) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
 
     bool clickedIn(QMouseEvent *event);
     bool isClickedOn(QMouseEvent *event) override;
+    void translate(Vec2d translateBy) override;
 
 private:
     QPainterPath path;

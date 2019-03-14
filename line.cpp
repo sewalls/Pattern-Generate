@@ -16,12 +16,6 @@ void Line::draw(QPainter *painter) {
     painter->drawLine(QLineF{p1.x, p1.y, p2.x, p2.y});
 }
 
-void Line::drawSelected(QPainter *painter) {
-    pen.setStyle(Qt::DashDotLine);
-    painter->setPen(pen);
-    painter->drawLine(QLineF{p1.x, p1.y, p2.x, p2.y});
-}
-
 void Line::mousePressEvent(QMouseEvent *event) {
     switch(currentState) {
     case Precreated: {
@@ -64,8 +58,7 @@ void Line::mouseMoveEvent(QMouseEvent *event) {
     }
     case Moving: {
         if(event->buttons() == Qt::LeftButton)  {
-            p1.translate(event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y);
-            p2.translate(event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y);
+            translate({event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y});
             movePoint = {event->localPos().x(), event->localPos().y()};
         }
         break;
@@ -77,7 +70,7 @@ void Line::mouseMoveEvent(QMouseEvent *event) {
     }
 }
 
-void Line::mouseReleaseEvent(__attribute__((unused))QMouseEvent *event) { //currently marked unused to silence warnings
+void Line::mouseReleaseEvent(QMouseEvent */*event*/) { //currently marked unused to silence warnings
     switch(currentState) {
     case Precreated: {
 
@@ -114,4 +107,9 @@ double Line::distanceClicked(QMouseEvent *event) {
     }
 
     return sqrt(b.lengthSquared());
+}
+
+void Line::translate(Vec2d translateBy) {
+    p1.translate(translateBy.x, translateBy.y);
+    p2.translate(translateBy.x, translateBy.y);
 }
