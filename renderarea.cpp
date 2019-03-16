@@ -27,6 +27,8 @@ RenderArea::RenderArea(QWidget *parent)
     yBoundingRect = fontMetrics.boundingRect(tr("y"));
     pen.setColor(Qt::black);
     brush.setColor(Qt::transparent);
+
+    selectGroup->currentState = Finished;
 }
 //! [0]
 
@@ -84,9 +86,9 @@ void RenderArea::paintEvent(__attribute__((unused))QPaintEvent *event) //current
     for(unsigned int i = 0; i < shapes.size(); i++) {
         shapes[i]->draw(&painter);
     }
-    selectGroup->draw(&painter);
+    selectGroup->draw(&painter); //the above loop should draw this, but it doesn't
 
-    drawTiles(painter);
+    //drawTiles(painter);
 
     switch(masterState) { //for testing
     case Precreated: {
@@ -212,13 +214,16 @@ void RenderArea::mousePressEvent(QMouseEvent *event) {
             }
             else {
                 activeShape = nullptr;
+                masterState = Finished;
             }
-        }
+          }
         }
 
         for(int i = static_cast<int>(shapes.size()) - 1; i >= 0; i--) { //weird casting to avoid warnings
             shapes[static_cast<unsigned int>(i)]->mousePressEvent(event);
         }
+
+        selectGroup->mousePressEvent(event);
 
         if(activeShape) {
             masterState = activeShape->currentState;
@@ -231,6 +236,7 @@ void RenderArea::mouseMoveEvent(QMouseEvent *event) {
     for(int i = static_cast<int>(shapes.size()) - 1; i >= 0; i--) { //weird casting to avoid warnings
         shapes[static_cast<unsigned int>(i)]->mouseMoveEvent(event);
     }
+    selectGroup->mouseMoveEvent(event);
     if(activeShape) {
         masterState = activeShape->currentState;
     }
@@ -241,6 +247,7 @@ void RenderArea::mouseReleaseEvent(QMouseEvent *event) {
     for(int i = static_cast<int>(shapes.size()) - 1; i >= 0; i--) { //weird casting to avoid warnings
         shapes[static_cast<unsigned int>(i)]->mouseReleaseEvent(event);
     }
+    selectGroup->mouseReleaseEvent(event);
     if(activeShape) {
         masterState = activeShape->currentState;
     }

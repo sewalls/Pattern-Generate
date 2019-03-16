@@ -40,7 +40,7 @@ void Line::mousePressEvent(QMouseEvent *event) {
     case Finished: {
 
         break;
-    }
+      }
     }
 }
 
