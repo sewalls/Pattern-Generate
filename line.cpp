@@ -1,101 +1,54 @@
 #include "line.h"
 
-Line::Line() {
-
-}
-
-Line::Line(Vec2d p1, Vec2d p2)
+Line::Line()
 {
-    this->p1 = p1;
-    this->p2 = p2;
+
 }
 
 void Line::draw(QPainter *painter) {
-    pen.setStyle(Qt::SolidLine);
     painter->setPen(pen);
     painter->drawLine(QLineF{p1.x, p1.y, p2.x, p2.y});
 }
 
 void Line::mousePressEvent(QMouseEvent *event) {
     switch(currentState) {
-    case Precreated: {
+    case State::Precreated:
         p1 = {event->localPos().x(), event->localPos().y()};
-        p2 = {event->localPos().x(), event->localPos().y()};   //this is so that it doesn't instantly draw a line from p1 to (0, 0)
-        currentState = Creating;
+        p2 = {event->localPos().x(), event->localPos().y()};
+        currentState = State::Creating;
         break;
-    }
-    case Creating: {
-        currentState = Finished;
+    case State::Creating:
+        currentState = State::Finished;
         break;
-    }
-    case Moving: {
+    case State::Moving:
         if(isClickedOn(event)) {
             movePoint = {event->localPos().x(), event->localPos().y()};
         }
         else {
-            currentState = Finished;
+            currentState = State::Finished;
         }
         break;
-    }
-    case Finished: {
-
+    default:
         break;
-      }
     }
 }
 
 void Line::mouseMoveEvent(QMouseEvent *event) {
     switch(currentState) {
-    case Precreated: {
-
+    case State::Creating:
+        p2 = {event->localPos().x(), event->localPos().y()};
+        break;
+    case State::Moving: {
+        translate({event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y});
+        movePoint = {event->localPos().x(), event->localPos().y()};
         break;
     }
-    case Creating: {
-        if(event->buttons() == Qt::LeftButton) {
-            p2 = {event->localPos().x(), event->localPos().y()};
-        }
+    default:
         break;
-    }
-    case Moving: {
-        if(event->buttons() == Qt::LeftButton)  {
-            translate({event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y});
-            movePoint = {event->localPos().x(), event->localPos().y()};
-        }
-        break;
-    }
-    case Finished: {
-
-        break;
-    }
-    }
-}
-
-void Line::mouseReleaseEvent(QMouseEvent */*event*/) { //currently marked unused to silence warnings
-    switch(currentState) {
-    case Precreated: {
-
-        break;
-    }
-    case Creating: {
-        currentState = Finished;
-        break;
-    }
-    case Moving: {
-
-        break;
-    }
-    case Finished: {
-
-        break;
-    }
     }
 }
 
 bool Line::isClickedOn(QMouseEvent* event) {
-    return distanceClicked(event) < 10;
-}
-
-double Line::distanceClicked(QMouseEvent *event) {
     Vec2d p = {event->localPos().x(), event->localPos().y()};
     Vec2d b;
     double t = ((p - p1) * (p2 - p1)) / ((p2 - p1).lengthSquared());
@@ -106,10 +59,14 @@ double Line::distanceClicked(QMouseEvent *event) {
         b = (p1 + (p2 - p1).scaled(t)) - p;
     }
 
-    return sqrt(b.lengthSquared());
+    return sqrt(b.lengthSquared()) < 10;
 }
 
 void Line::translate(Vec2d translateBy) {
     p1.translate(translateBy.x, translateBy.y);
     p2.translate(translateBy.x, translateBy.y);
+}
+
+void Line::rotate(double theta) {
+
 }

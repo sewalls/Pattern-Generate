@@ -1,161 +1,44 @@
-/****************************************************************************
-**
-** Copyright (C) 2016 The Qt Company Ltd.
-** Contact: https://www.qt.io/licensing/
-**
-** This file is part of the examples of the Qt Toolkit.
-**
-** $QT_BEGIN_LICENSE:BSD$
-** Commercial License Usage
-** Licensees holding valid commercial Qt licenses may use this file in
-** accordance with the commercial license agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see https://www.qt.io/terms-conditions. For further
-** information use the contact form at https://www.qt.io/contact-us.
-**
-** BSD License Usage
-** Alternatively, you may use this file under the terms of the BSD license
-** as follows:
-**
-** "Redistribution and use in source and binary forms, with or without
-** modification, are permitted provided that the following conditions are
-** met:
-**   * Redistributions of source code must retain the above copyright
-**     notice, this list of conditions and the following disclaimer.
-**   * Redistributions in binary form must reproduce the above copyright
-**     notice, this list of conditions and the following disclaimer in
-**     the documentation and/or other materials provided with the
-**     distribution.
-**   * Neither the name of The Qt Company Ltd nor the names of its
-**     contributors may be used to endorse or promote products derived
-**     from this software without specific prior written permission.
-**
-**
-** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-** "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-** LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-** A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-** OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-** SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-** LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-** DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-** THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-** (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
-**
-** $QT_END_LICENSE$
-**
-****************************************************************************/
-
 #include "window.h"
 
 #include <QComboBox>
 #include <QGridLayout>
-#include <QMenuBar>
 
-Window::Window()
-{
-    originalRenderArea = new RenderArea;
-    this->setStyleSheet("background-color: white;"); //white menu bar?
-
+Window::Window() {
+    renderArea = new RenderArea;
     QVBoxLayout *boxLayout = new QVBoxLayout(this);
-    boxLayout->addWidget(originalRenderArea, 0, nullptr);
+    boxLayout->addWidget(renderArea, 0, nullptr);
 
-    QMenuBar *menuBar = new QMenuBar;
-    QMenu *chooseMenu = new QMenu;
-    QAction *menuAction;
-    QActionGroup *shapeChosen = new QActionGroup(this);
-    QActionGroup *penChosen = new QActionGroup(this);
+    menuBar = new QMenuBar;
+    chooseMenu = new QMenu;
+    QActionGroup *shapeBar = new QActionGroup(this);
+    QActionGroup *groupBar = new QActionGroup(this);
+    QActionGroup *colorBar = new QActionGroup(this);
 
     chooseMenu = menuBar->addMenu("Shape");
-    menuAction = chooseMenu->addAction("Ellipse");
-    menuAction->setCheckable(true);
-    shapeChosen->addAction(menuAction);
-    connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(ellipseTrigger()));
-    menuAction = chooseMenu->addAction("Line");
-    menuAction->setCheckable(true);
-    shapeChosen->addAction(menuAction);
-    connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(lineTrigger()));
-    menuAction->trigger();
-    menuAction = chooseMenu->addAction("Rectangle");
-    menuAction->setCheckable(true);
-    shapeChosen->addAction(menuAction);
-    connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(rectangleTrigger()));
-    menuAction = chooseMenu->addAction("Free Draw");
-    menuAction->setCheckable(true);
-    shapeChosen->addAction(menuAction);
-    connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(freedrawTrigger()));
-    menuAction = chooseMenu->addAction("Poly-line");
-    menuAction->setCheckable(true);
-    shapeChosen->addAction(menuAction);
-    connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(polyTrigger()));
-    menuAction = chooseMenu->addAction("Select");
-    menuAction->setCheckable(true);
-    shapeChosen->addAction(menuAction);
-    connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(selectTrigger()));
-    //is this efficient?
-
-//    chooseMenu = menuBar->addMenu("Pen");
-//    menuAction = chooseMenu->addAction("Solid");
-//    menuAction->setCheckable(true);
-//    penChosen->addAction(menuAction);
-//    connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(solidTrigger()));
-//    menuAction->trigger();
-//    menuAction = chooseMenu->addAction("Dashed");
-//    menuAction->setCheckable(true);
-//    penChosen->addAction(menuAction);
-//    connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(dashedTrigger()));
-//    menuAction = chooseMenu->addAction("Dotted");
-//    menuAction->setCheckable(true);
-//    penChosen->addAction(menuAction);
-//    connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(dottedTrigger()));
+    addAction(SLOT(ellipseTrigger()), "Ellipse", shapeBar, true);
+    addAction(SLOT(rectangleTrigger()), "Rectangle", shapeBar, true);
+    addAction(SLOT(lineTrigger()), "Line", shapeBar, true);
+    addAction(SLOT(polygonTrigger()), "Polygon", shapeBar, true);
+    addAction(SLOT(selectTrigger()), "Select", shapeBar, true);
 
     chooseMenu = menuBar->addMenu("Color");
-    menuAction = chooseMenu->addAction("Choose Pen Color");
-    penChosen->addAction(menuAction);
-    connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(colorPenOpened()));
-    menuAction = chooseMenu->addAction("Choose Brush Color");
-    penChosen->addAction(menuAction);
-    connect(menuAction, SIGNAL(triggered()), originalRenderArea, SLOT(colorBrushOpened()));
+    addAction(SLOT(colorPenOpened()), "Choose Outline Color", colorBar, false);
+    addAction(SLOT(colorBrushOpened()), "Choose Fill Color", colorBar, false);
+
+    chooseMenu = menuBar->addMenu("Disband Group");
+    addAction(SLOT(disbandGroup()), "Delete Group", groupBar, false);
 
     this->layout()->setMenuBar(menuBar);
-
-//! [1]
-//    for (int i = 0; i < NumTransformedAreas; ++i) {
-//        transformedRenderAreas[i] = new RenderArea;
-
-//        operationComboBoxes[i] = new QComboBox;
-//        operationComboBoxes[i]->addItem(tr("No transformation"));
-//        operationComboBoxes[i]->addItem(tr("Rotate by 60\xC2\xB0"));
-//        operationComboBoxes[i]->addItem(tr("Scale to 75%"));
-//        operationComboBoxes[i]->addItem(tr("Translate by (50, 50)"));
-
-//        connect(operationComboBoxes[i], SIGNAL(activated(int)),
-//                this, SLOT(operationChanged()));
-
-//        layout->addWidget(transformedRenderAreas[i], 0, i + 1);
-//        layout->addWidget(operationComboBoxes[i], 1, i + 1);
-//    }
-//! [1]
-
-//! [2]
-    setLayout(boxLayout);
-
+    this->setStyleSheet("background-color: white;");
     setWindowTitle(tr("Draw"));
-    setFixedSize(1300, 900);
+    setFixedSize(1600, 900);
 }
 
-void Window::operationChanged()
-{
-    static const Operation operationTable[] = {
-        NoTransformation, Rotate, Scale, Translate
-    };
-
-    QList<Operation> operations;
-    for (int i = 0; i < NumTransformedAreas; ++i) {
-        int index = operationComboBoxes[i]->currentIndex();
-        operations.append(operationTable[index]);
-        transformedRenderAreas[i]->setOperations(operations);
-    }
+void Window::addAction(const char* slot, QString actionName, QActionGroup *actionGroup, bool canCheck) {
+    menuAction = chooseMenu->addAction(actionName);
+    menuAction->setCheckable(canCheck);
+    actionGroup->addAction(menuAction);
+    connect(menuAction, SIGNAL(triggered()), renderArea, slot);
 }
+
+

@@ -1,14 +1,12 @@
 #ifndef SHAPE_H
 #define SHAPE_H
 
-#include <QMouseEvent>
-#include <math.h>
 #include <QPainter>
-#include "vec2d.h"
+#include <QMouseEvent>
+#include <memory>
+#include "vec2dfuncs.h"
 
-enum State { Precreated, Creating, Moving, Finished }; //change name potentially
-
-class QPainter;
+enum class State { Precreated, Creating, Moving, Finished };
 
 class Shape
 {
@@ -16,25 +14,25 @@ public:
     Shape();
     virtual ~Shape() = 0;
 
-    virtual void draw(QPainter* painter) = 0;
+    virtual void draw(QPainter *painter) = 0;
     virtual void mousePressEvent(QMouseEvent *event) = 0;
     virtual void mouseMoveEvent(QMouseEvent *event) = 0;
-    virtual void mouseReleaseEvent(QMouseEvent *event) = 0;
-
+    virtual void mouseReleaseEvent(QMouseEvent *);
+    virtual void translate(Vec2d translateBy) = 0;
+    virtual void rotate(double theta) = 0;
     virtual void changePen(QPen pen) {this->pen = pen;}
     virtual void changeBrush(QBrush brush) {this->brush = brush;}
     virtual bool isClickedOn(QMouseEvent *event) = 0;
 
-    virtual void translate(Vec2d translateBy) = 0;
+    State currentState = State::Precreated;
+    Vec2d movePoint;
 
-    bool isMoving = false;
-    State currentState = Precreated;
+    unsigned int index;
 
-//protected:
     QPen pen;
     QBrush brush;
-    Vec2d movePoint;
-    unsigned int order;
 };
+
+typedef std::vector<std::unique_ptr<Shape>> ShapePtrVctr;
 
 #endif // SHAPE_H

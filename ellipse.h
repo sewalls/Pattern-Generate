@@ -7,17 +7,13 @@ class Ellipse : public Shape
 {
 public:
     Ellipse();
-    Ellipse(Vec2d p1, Vec2d p2);
-    Ellipse(Vec2d p1, double w, double h);
 
-    void draw(QPainter* painter) override;
+    void draw(QPainter *painter) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
-    void mouseReleaseEvent(QMouseEvent *event) override;
-
-    bool isClickedOn(QMouseEvent *event) override;
+    void rotate(double theta) override;
     void translate(Vec2d translateBy) override;
-
+    bool isClickedOn(QMouseEvent *event) override;
     std::vector<Vec2d> param();
 
 private:

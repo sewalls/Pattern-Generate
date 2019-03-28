@@ -6,19 +6,16 @@
 class Line : public Shape
 {
 public:
-    Line();
-    Line(Vec2d p1, Vec2d p2);
+    Line();  
 
-    void draw(QPainter* painter) override;
+    void draw(QPainter *painter) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
-    void mouseReleaseEvent(QMouseEvent *event) override;
-
-    double distanceClicked(QMouseEvent *event);
-    bool isClickedOn(QMouseEvent *event) override;
+    void rotate(double theta) override;
     void translate(Vec2d translateBy) override;
+    bool isClickedOn(QMouseEvent *event) override;
 
-protected:
+private:
     Vec2d p1;
     Vec2d p2;
 };

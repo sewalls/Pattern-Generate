@@ -16,6 +16,14 @@ void Vec2d::translate(double x, double y) {
     this->y += y;
 }
 
+void Vec2d::rotate(Vec2d center, double theta) {
+    Vec2d v1 = *this - center;
+
+    v1 = {v1.x * cos(theta) - v1.y * sin(theta), v1.x * sin(theta) + v1.y * cos(theta)};
+
+    *this = center + v1;
+}
+
 double operator*(Vec2d p1, Vec2d p2) {
     return double {p1.x * p2.x + p1.y * p2.y};
 }

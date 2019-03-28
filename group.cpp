@@ -11,77 +11,39 @@ void Group::draw(QPainter *painter) {
     }
 }
 
+void Group::drawTiled(QPainter *painter) {
+    for(auto& obj:childShapes) { //just messing around with
+        for(double i = 0; i < 2000; i += 100) {
+            for(double j = 0; j < 2000; j += 100) {
+                obj->draw(painter);
+                obj->translate({i, j});
+                obj->draw(painter);
+                obj->translate({-i, -j});
+            }
+        }
+    }
+}
+
 void Group::mousePressEvent(QMouseEvent *event) {
     switch(currentState) {
-    case Precreated: {
-
-        break;
-    }
-    case Creating: {
-
-        break;
-    }
-    case Moving: {
+    case State::Moving:
         if(isClickedOn(event)) {
             movePoint = {event->localPos().x(), event->localPos().y()};
         }
         else {
-            currentState = Finished;
+            currentState = State::Finished;
         }
         break;
-    }
-    case Finished: {
-        if(isClickedOn(event)) {
-            currentState = Moving;
-        }
+    default:
         break;
     }
-  }
 }
 
 void Group::mouseMoveEvent(QMouseEvent *event) {
-    switch(currentState) {
-    case Precreated: {
-
-        break;
+    if(currentState == State::Moving) {
+        translate({event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y});
+        movePoint = {event->localPos().x(), event->localPos().y()};
     }
-    case Creating: {
-
-        break;
-    }
-    case Moving: {
-        if(event->buttons() == Qt::LeftButton)  {
-            translate({event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y});
-            movePoint = {event->localPos().x(), event->localPos().y()};
-        }
-        break;
-    }
-    case Finished: {
-
-        break;
-    }
-  }
-}
-
-void Group::mouseReleaseEvent(QMouseEvent */*event*/) { //currently marked unused to silence warnings
-    switch(currentState) {
-    case Precreated: {
-
-        break;
-    }
-    case Creating: {
-        currentState = Finished;
-        break;
-    }
-    case Moving: {
-
-        break;
-    }
-    case Finished: {
-
-        break;
-    }
-  }
 }
 
 bool Group::isClickedOn(QMouseEvent* event) {
@@ -100,4 +62,8 @@ void Group::translate(Vec2d translateBy) {
     for(auto& obj:childShapes) {
         obj->translate(translateBy);
     }
+}
+
+void Group::rotate(double theta) {
+
 }

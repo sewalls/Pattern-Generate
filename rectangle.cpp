@@ -1,100 +1,59 @@
 #include "rectangle.h"
 
-Rectangle::Rectangle() {
-
-}
-
-Rectangle::Rectangle(Vec2d p1, Vec2d p2)
+Rectangle::Rectangle()
 {
-    this->p1 = p1;
-    this->p2 = p2;
+
 }
 
-Rectangle::Rectangle(Vec2d p1, double w, double h) {
-    this->p1 = p1;
-    p2 = {p1.x - w, p1.y - h};
-}
-
-void Rectangle::draw(QPainter* painter) {
-    pen.setStyle(Qt::SolidLine);
+void Rectangle::draw(QPainter *painter) {
+    QPainterPath path;
+    path.moveTo({p1.x, p1.y});
+    path.lineTo({dp1.x, dp1.y});
+    path.lineTo({p2.x, p2.y});
+    path.lineTo({dp2.x, dp2.y});
+    path.lineTo({p1.x, p1.y});
     brush.setStyle(Qt::SolidPattern);
-    painter->setBrush(brush);
     painter->setPen(pen);
-    painter->drawRect(QRectF{p1.x, p1.y, width(), height()});
+    painter->setBrush(brush);
+    painter->drawPath(path);
 }
 
 void Rectangle::mousePressEvent(QMouseEvent *event) {
     switch(currentState) {
-    case Precreated: {
+    case State::Precreated:
         p1 = {event->localPos().x(), event->localPos().y()};
         p2 = {event->localPos().x(), event->localPos().y()};
-        currentState = Creating;
+        currentState = State::Creating;
         break;
-    }
-    case Creating: {
-        currentState = Finished;
+    case State::Creating:
+        currentState = State::Finished;
         break;
-    }
-    case Moving: {
+    case State::Moving:
         if(isClickedOn(event)) {
             movePoint = {event->localPos().x(), event->localPos().y()};
         }
         else {
-            currentState = Finished;
+            currentState = State::Finished;
         }
         break;
-    }
-    case Finished: {
-
+    default:
         break;
-    }
     }
 }
 
 void Rectangle::mouseMoveEvent(QMouseEvent *event) {
     switch(currentState) {
-    case Precreated: {
-
+    case State::Creating:
+        p2 = {event->localPos().x(), event->localPos().y()};
+        dp1 = {p2.x, p1.y};
+        dp2 = {p1.x, p2.y};
         break;
-    }
-    case Creating: {
-        if(event->buttons() == Qt::LeftButton) {
-            p2 = {event->localPos().x(), event->localPos().y()};
-        }
+    case State::Moving:
+        translate({event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y});
+        movePoint = {event->localPos().x(), event->localPos().y()};
         break;
-    }
-    case Moving: {
-        if(event->buttons() == Qt::LeftButton)  {
-            translate({event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y});
-            movePoint = {event->localPos().x(), event->localPos().y()};
-        }
+    default:
         break;
-    }
-    case Finished: {
-
-        break;
-    }
-    }
-}
-
-void Rectangle::mouseReleaseEvent(__attribute__((unused))QMouseEvent *event) { //currently marked unused to silence warnings
-    switch(currentState) {
-    case Precreated: {
-
-        break;
-    }
-    case Creating: {
-        currentState = Finished;
-        break;
-    }
-    case Moving: {
-
-        break;
-    }
-    case Finished: {
-
-        break;
-    }
     }
 }
 
@@ -110,12 +69,14 @@ bool Rectangle::isClickedOn(QMouseEvent *event) {
 void Rectangle::translate(Vec2d translateBy) {
     p1.translate(translateBy.x, translateBy.y);
     p2.translate(translateBy.x, translateBy.y);
+    dp1 = {p2.x, p1.y};
+    dp2 = {p1.x, p2.y};
 }
 
-double Rectangle::width() {
-    return p2.x - p1.x;
-}
-
-double Rectangle::height() {
-    return p2.y - p1.y;
+void Rectangle::rotate(double theta) {
+    Vec2d center = {(p1.x + p2.x) / 2, (p1.y + p2.y) / 2};
+    p1.rotate(center, theta);
+    dp1.rotate(center, theta);
+    p2.rotate(center, theta);
+    dp2.rotate(center, theta);
 }
