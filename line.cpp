@@ -66,7 +66,3 @@ void Line::translate(Vec2d translateBy) {
     p1.translate(translateBy.x, translateBy.y);
     p2.translate(translateBy.x, translateBy.y);
 }
-
-void Line::rotate(double theta) {
-
-}

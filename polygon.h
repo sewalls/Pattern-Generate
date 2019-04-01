@@ -12,7 +12,6 @@ public:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
-    void rotate(double theta) override;
     void translate(Vec2d translateBy) override;
     bool isClickedOn(QMouseEvent *event) override;
 

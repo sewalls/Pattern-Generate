@@ -92,7 +92,3 @@ void Ellipse::translate(Vec2d translateBy) {
     p2.translate(translateBy.x, translateBy.y);
 }
 
-void Ellipse::rotate(double theta) {
-
-}
-

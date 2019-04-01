@@ -84,7 +84,3 @@ bool Polygon::isClickedOn(QMouseEvent *event) {
 void Polygon::translate(Vec2d translateBy) {
     path.translate(translateBy.x, translateBy.y);
 }
-
-void Polygon::rotate(double theta) {
-
-}

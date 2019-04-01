@@ -63,7 +63,3 @@ void Group::translate(Vec2d translateBy) {
         obj->translate(translateBy);
     }
 }
-
-void Group::rotate(double theta) {
-
-}

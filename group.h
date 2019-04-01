@@ -12,7 +12,6 @@ public:
     void drawTiled(QPainter *painter);
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
-    void rotate(double theta) override;
     void translate(Vec2d translateBy) override;
     bool isClickedOn(QMouseEvent *event) override;
 

@@ -56,6 +56,7 @@ private:
     State masterState = State::Finished;
     ShapePtrVctr shapes;
     Shape* activeShape = nullptr;
+    Rectangle selectBox;
     std::unique_ptr<Group> selectGroup;
 };
 

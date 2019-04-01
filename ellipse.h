@@ -11,7 +11,6 @@ public:
     void draw(QPainter *painter) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
-    void rotate(double theta) override;
     void translate(Vec2d translateBy) override;
     bool isClickedOn(QMouseEvent *event) override;
     std::vector<Vec2d> param();

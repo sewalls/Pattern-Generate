@@ -94,8 +94,8 @@ void RenderArea::mousePressEvent(QMouseEvent *event) {
 void RenderArea::mouseMoveEvent(QMouseEvent *event) {
     if(shapeToggled == ShapeName::Select && event->modifiers() == Qt::ShiftModifier) {
         Vec2d eventOrig = {event->localPos().x(), event->localPos().y()};
-        Vec2d p1 = {selectBox.p1.x, selectBox.p1.y};
-        Vec2d p2 = {selectBox.p2.x, selectBox.p2.y};
+        Vec2d p1 = selectBox.p1;
+        Vec2d p2 = selectBox.p2;
         selectBox.mouseMoveEvent(event);
         std::vector<Vec2d> points;
 

@@ -6,16 +6,15 @@ Rectangle::Rectangle()
 }
 
 void Rectangle::draw(QPainter *painter) {
-    QPainterPath path;
-    path.moveTo({p1.x, p1.y});
-    path.lineTo({dp1.x, dp1.y});
-    path.lineTo({p2.x, p2.y});
-    path.lineTo({dp2.x, dp2.y});
-    path.lineTo({p1.x, p1.y});
+    Vec2d center = {(p1.x + p2.x) / 2, (p1.y + p2.y) / 2};
     brush.setStyle(Qt::SolidPattern);
     painter->setPen(pen);
     painter->setBrush(brush);
-    painter->drawPath(path);
+//    painter->translate(center.x, center.y);
+//    painter->rotate(theta / 3.14159 * 180);
+    painter->drawRect(QRectF{p1.x, p1.y, p2.x - p1.x, p2.y - p1.y});
+//    painter->rotate(-theta / 3.14159 * 180);
+//    painter->translate(-center.x, -center.y);
 }
 
 void Rectangle::mousePressEvent(QMouseEvent *event) {
@@ -45,8 +44,6 @@ void Rectangle::mouseMoveEvent(QMouseEvent *event) {
     switch(currentState) {
     case State::Creating:
         p2 = {event->localPos().x(), event->localPos().y()};
-        dp1 = {p2.x, p1.y};
-        dp2 = {p1.x, p2.y};
         break;
     case State::Moving:
         translate({event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y});
@@ -69,14 +66,4 @@ bool Rectangle::isClickedOn(QMouseEvent *event) {
 void Rectangle::translate(Vec2d translateBy) {
     p1.translate(translateBy.x, translateBy.y);
     p2.translate(translateBy.x, translateBy.y);
-    dp1 = {p2.x, p1.y};
-    dp2 = {p1.x, p2.y};
-}
-
-void Rectangle::rotate(double theta) {
-    Vec2d center = {(p1.x + p2.x) / 2, (p1.y + p2.y) / 2};
-    p1.rotate(center, theta);
-    dp1.rotate(center, theta);
-    p2.rotate(center, theta);
-    dp2.rotate(center, theta);
 }

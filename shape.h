@@ -19,13 +19,13 @@ public:
     virtual void mouseMoveEvent(QMouseEvent *event) = 0;
     virtual void mouseReleaseEvent(QMouseEvent *);
     virtual void translate(Vec2d translateBy) = 0;
-    virtual void rotate(double theta) = 0;
     virtual void changePen(QPen pen) {this->pen = pen;}
     virtual void changeBrush(QBrush brush) {this->brush = brush;}
     virtual bool isClickedOn(QMouseEvent *event) = 0;
 
     State currentState = State::Precreated;
     Vec2d movePoint;
+    double  theta;
 
     unsigned int index;
 
