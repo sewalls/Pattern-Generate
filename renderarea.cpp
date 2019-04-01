@@ -86,35 +86,28 @@ void RenderArea::mousePressEvent(QMouseEvent *event) {
         obj->mousePressEvent(event);
     }
     selectGroup->mousePressEvent(event);
-
     updateMasterState();
-    update();
 }
 
 void RenderArea::mouseMoveEvent(QMouseEvent *event) {
     if(shapeToggled == ShapeName::Select && event->modifiers() == Qt::ShiftModifier) {
         Vec2d eventOrig = {event->localPos().x(), event->localPos().y()};
-        Vec2d p1 = {selectBox.p1.x, selectBox.p1.y};
-        Vec2d p2 = {selectBox.p2.x, selectBox.p2.y};
         selectBox.mouseMoveEvent(event);
+        Vec2d p1 = {std::min(selectBox.p1.x, selectBox.p2.x), std::max(selectBox.p1.y, selectBox.p2.y)};
+        Vec2d p2 = {std::max(selectBox.p1.x, selectBox.p2.x), std::min(selectBox.p1.y, selectBox.p2.y)};
         std::vector<Vec2d> points;
-
-        if(p1.x > p2.x) {
-            double width = p1.x - p2.x;
-            p1.x -= width;
-            p2.x += width;
-        }
-        if(p1.y < p2.y) {
-            double height = p2.y - p1.y;
-            p1.y += height;
-            p2.y -= height;
-        }
 
         for(double x = p1.x; x < p2.x; x += (p2.x - p1.x) / 20) {
             for(double y = p1.y; y < p2.y; y += (p2.y - p1.y) / 20 ) {
-                points.push_back({x, y});
+                points.push_back({x, y});           //this does nothing for any sorts of rectangle
             }
         }
+
+//        for(double x = selectBox.p1.x; x < selectBox.p2.x; x += (selectBox.p2.x - selectBox.p1.x) / 20) {
+//            for(double y = selectBox.p1.y; y < selectBox.p2.y; y += (selectBox.p2.y - selectBox.p1.y) / 20 ) {
+//                points.push_back({x, y});         //this works assuming a "normal rectangle"
+//            }
+//        }
 
         bool clicked;
 
@@ -138,9 +131,7 @@ void RenderArea::mouseMoveEvent(QMouseEvent *event) {
         obj->mouseMoveEvent(event);
     }
     selectGroup->mouseMoveEvent(event);
-
     updateMasterState();
-    update();
 }
 
 void RenderArea::mouseReleaseEvent(QMouseEvent *event) {
@@ -150,9 +141,7 @@ void RenderArea::mouseReleaseEvent(QMouseEvent *event) {
         obj->mouseReleaseEvent(event);
     }
     selectGroup->mouseReleaseEvent(event);
-
     updateMasterState();
-    update();
 }
 
 void RenderArea::colorPenOpened() {
@@ -186,6 +175,7 @@ void RenderArea::updateMasterState() {
     if(activeShape) {
         masterState = activeShape->currentState;
     }
+    update();
 }
 
 void RenderArea::disbandGroup() {
