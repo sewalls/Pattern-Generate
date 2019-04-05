@@ -15,7 +15,7 @@ public:
     void translate(Vec2d translateBy) override;
     bool isClickedOn(QMouseEvent *event) override;
 
-    ShapePtrVctr childShapes;
+    std::vector<std::unique_ptr<Shape>> childShapes;
 };
 
 #endif // GROUP_H

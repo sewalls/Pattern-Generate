@@ -25,7 +25,7 @@ public:
 
     State currentState = State::Precreated;
     Vec2d movePoint;
-    double  theta;
+    double  theta; //currently unused
 
     unsigned int index;
 

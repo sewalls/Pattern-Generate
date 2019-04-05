@@ -10,11 +10,7 @@ void Rectangle::draw(QPainter *painter) {
     brush.setStyle(Qt::SolidPattern);
     painter->setPen(pen);
     painter->setBrush(brush);
-//    painter->translate(center.x, center.y);
-//    painter->rotate(theta / 3.14159 * 180);
     painter->drawRect(QRectF{p1.x, p1.y, p2.x - p1.x, p2.y - p1.y});
-//    painter->rotate(-theta / 3.14159 * 180);
-//    painter->translate(-center.x, -center.y);
 }
 
 void Rectangle::mousePressEvent(QMouseEvent *event) {

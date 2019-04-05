@@ -29,6 +29,7 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
 
 public slots:
     void ellipseTrigger() { shapeToggled = ShapeName::Ellipse; }
@@ -40,7 +41,7 @@ public slots:
     void colorBrushOpened();
     void disbandGroup();
 
-private:
+public: //remake private
     template<typename T>
     T* addShape();
 
@@ -57,6 +58,7 @@ private:
     ShapePtrVctr shapes;
     Shape* activeShape = nullptr;
     Rectangle selectBox;
+    Rectangle tileBox;
     std::unique_ptr<Group> selectGroup;
 };
 

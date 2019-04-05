@@ -25,7 +25,7 @@ Window::Window() {
     addAction(SLOT(colorPenOpened()), "Choose Outline Color", colorBar, false);
     addAction(SLOT(colorBrushOpened()), "Choose Fill Color", colorBar, false);
 
-    chooseMenu = menuBar->addMenu("Disband Group");
+    chooseMenu = menuBar->addMenu("Group");
     addAction(SLOT(disbandGroup()), "Delete Group", groupBar, false);
 
     this->layout()->setMenuBar(menuBar);

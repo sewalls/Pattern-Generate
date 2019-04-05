@@ -6,23 +6,41 @@ RenderArea::RenderArea(QWidget *parent)
     setFocusPolicy(Qt::StrongFocus);
     setFocus();
 
+    grabKeyboard();
+
     pen.setColor(Qt::black);
     brush.setColor(Qt::transparent);
 
     pen.setStyle(Qt::DashLine);
     selectBox.changePen(pen);
+    tileBox.changePen(pen);
     pen.setStyle(Qt::SolidLine);
     selectBox.changeBrush(brush);
+    tileBox.changeBrush(brush);
 }
 
 void RenderArea::paintEvent(QPaintEvent *) {
     QPainter painter(this);
 
     painter.drawText(5, 10, QString::fromStdString(std::to_string(static_cast<int>(masterState))));
+    painter.drawText(15, 10, QString::fromStdString(std::to_string(selectGroup->childShapes.size())));
+    painter.drawText(35, 10, QString::fromStdString(std::to_string(hasFocus())));
+
+    ShapePtrVctr shapeOrdered;
+    for(auto& obj:shapes) {
+        //if()
+    }
 
     for(auto& obj:shapes) {
         obj->draw(&painter);
     }
+
+    if(activeShape) {
+        painter.drawText(25, 10, QString::fromStdString(std::to_string(activeShape->index)));
+    }
+
+    selectGroup->changePen(pen);
+    selectGroup->changeBrush(brush);
     selectGroup->draw(&painter);
     selectBox.draw(&painter);
 }
@@ -93,26 +111,19 @@ void RenderArea::mouseMoveEvent(QMouseEvent *event) {
     if(shapeToggled == ShapeName::Select && event->modifiers() == Qt::ShiftModifier) {
         Vec2d eventOrig = {event->localPos().x(), event->localPos().y()};
         selectBox.mouseMoveEvent(event);
-        Vec2d p1 = {std::min(selectBox.p1.x, selectBox.p2.x), std::max(selectBox.p1.y, selectBox.p2.y)};
-        Vec2d p2 = {std::max(selectBox.p1.x, selectBox.p2.x), std::min(selectBox.p1.y, selectBox.p2.y)};
+        Vec2d p1 = {std::min(selectBox.p1.x, selectBox.p2.x), std::min(selectBox.p1.y, selectBox.p2.y)};
+        Vec2d p2 = {std::max(selectBox.p1.x, selectBox.p2.x), std::max(selectBox.p1.y, selectBox.p2.y)};
         std::vector<Vec2d> points;
+        points.clear();
 
         for(double x = p1.x; x < p2.x; x += (p2.x - p1.x) / 20) {
             for(double y = p1.y; y < p2.y; y += (p2.y - p1.y) / 20 ) {
-                points.push_back({x, y});           //this does nothing for any sorts of rectangle
+                points.push_back({x, y});
             }
         }
 
-//        for(double x = selectBox.p1.x; x < selectBox.p2.x; x += (selectBox.p2.x - selectBox.p1.x) / 20) {
-//            for(double y = selectBox.p1.y; y < selectBox.p2.y; y += (selectBox.p2.y - selectBox.p1.y) / 20 ) {
-//                points.push_back({x, y});         //this works assuming a "normal rectangle"
-//            }
-//        }
-
-        bool clicked;
-
         for(unsigned int i = 0; i < shapes.size(); i++) {
-            clicked = false;
+            bool clicked = false;
             for(auto& point:points) {
                 event->setLocalPos({point.x, point.y});
                 if(shapes[i]->isClickedOn(event)) {
@@ -127,6 +138,7 @@ void RenderArea::mouseMoveEvent(QMouseEvent *event) {
 
         event->setLocalPos({eventOrig.x, eventOrig.y});
     }
+
     for(auto& obj:shapes) {
         obj->mouseMoveEvent(event);
     }
@@ -137,10 +149,51 @@ void RenderArea::mouseMoveEvent(QMouseEvent *event) {
 void RenderArea::mouseReleaseEvent(QMouseEvent *event) {
     selectBox.p1 = {0, 0};
     selectBox.p2 = {0, 0};
+    if(selectGroup->childShapes.size() > 0) {
+        std::unique_ptr<Group> group = std::make_unique<Group>();
+        for(unsigned int i = 0; i < selectGroup->childShapes.size(); i++) {
+            group->childShapes.push_back(std::move(selectGroup->childShapes[i]));
+        }
+        selectGroup->childShapes.clear();
+        group->index = group->childShapes[0]->index;
+        group->changePen(pen);
+        group->changeBrush(brush);
+        shapes.push_back(std::move(group));
+    }
     for(auto& obj:shapes) {
         obj->mouseReleaseEvent(event);
     }
     selectGroup->mouseReleaseEvent(event);
+    updateMasterState();
+}
+
+void RenderArea::keyPressEvent(QKeyEvent *event) {
+    switch(event->key()) {
+    case(Qt::Key_C):
+        shapes.clear();
+        selectGroup->childShapes.clear();
+        masterIndex = 0;
+        activeShape = nullptr;
+        updateMasterState();
+        break;
+    case(Qt::Key_R):
+        shapeToggled = ShapeName::Rectangle;
+        break;
+    case(Qt::Key_E):
+        shapeToggled = ShapeName::Ellipse;
+    break;
+    case(Qt::Key_L):
+        shapeToggled = ShapeName::Line;
+        break;
+    case(Qt::Key_P):
+        shapeToggled = ShapeName::Polygon;
+        break;
+    case(Qt::Key_S):
+        shapeToggled = ShapeName::Select;
+        break;
+    default:
+        break;
+    }
     updateMasterState();
 }
 
@@ -171,10 +224,14 @@ void RenderArea::setActiveShape(Shape *shape) {
     }
 }
 
-void RenderArea::updateMasterState() {
+void RenderArea::updateMasterState() { //stuff that continually needs to be redone. probably is lazy programming
     if(activeShape) {
         masterState = activeShape->currentState;
     }
+
+    std::sort(shapes.begin(), shapes.end(), [](std::unique_ptr<Shape>& a, std::unique_ptr<Shape>& b) {
+        return a->index < b->index;
+    });
     update();
 }
 
@@ -183,10 +240,6 @@ void RenderArea::disbandGroup() {
         shapes.push_back(std::move(obj));
     }
     selectGroup->childShapes.clear();
-    std::sort(shapes.begin(), shapes.end(), [](std::unique_ptr<Shape>& a, std::unique_ptr<Shape>& b) {
-        return a->index < b->index;
-    });
-    shapes[0]->theta = (3.14159 / 4); //to test
 }
 
 template<typename T>

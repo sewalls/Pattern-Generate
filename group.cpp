@@ -6,22 +6,16 @@ Group::Group()
 }
 
 void Group::draw(QPainter *painter) {
+    brush.setStyle(Qt::SolidPattern);
     for(auto& obj:childShapes) {
+        obj->changePen(pen);
+        obj->changeBrush(brush);
         obj->draw(painter);
     }
 }
 
 void Group::drawTiled(QPainter *painter) {
-    for(auto& obj:childShapes) { //just messing around with
-        for(double i = 0; i < 2000; i += 100) {
-            for(double j = 0; j < 2000; j += 100) {
-                obj->draw(painter);
-                obj->translate({i, j});
-                obj->draw(painter);
-                obj->translate({-i, -j});
-            }
-        }
-    }
+
 }
 
 void Group::mousePressEvent(QMouseEvent *event) {
