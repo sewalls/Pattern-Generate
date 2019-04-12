@@ -81,6 +81,35 @@ bool Polygon::isClickedOn(QMouseEvent *event) {
     return count % 2;
 }
 
+void Polygon::fixOffscreen() {
+    double smallestX = path.elementAt(0).x;
+    double largestX  = path.elementAt(0).x;
+    double smallestY = path.elementAt(0).y;
+    double largestY  = path.elementAt(0).y;
+    for(int i = 1; i < path.elementCount(); i++) {
+        smallestX = std::min(smallestX, path.elementAt(i).x);
+        largestX  = std::max(largestX, path.elementAt(i).x);
+        smallestY = std::min(smallestY, path.elementAt(i).y);
+        largestY  = std::max(largestY, path.elementAt(i).y);
+    }
+
+    if(smallestX > 1600) {
+        translate({-1600, 0});
+    }
+    if(smallestY > 900) {
+        translate({0, -900});
+    }
+    if(largestX < 0) {
+        translate({1600, 0});
+    }
+    if(largestY < 0) {
+        translate({0, 900});
+    }}
+
 void Polygon::translate(Vec2d translateBy) {
     path.translate(translateBy.x, translateBy.y);
+}
+
+ShapePtrVctr Polygon::disband() {
+
 }

@@ -14,6 +14,9 @@ public:
     void mouseReleaseEvent(QMouseEvent *event) override;
     void translate(Vec2d translateBy) override;
     bool isClickedOn(QMouseEvent *event) override;
+    void fixOffscreen() override;
+    virtual Polygon* clone_impl() const override { return new Polygon(*this); }
+    ShapePtrVctr disband() override;
 
 private:
     QPainterPath path;

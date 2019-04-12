@@ -26,11 +26,6 @@ void RenderArea::paintEvent(QPaintEvent *) {
     painter.drawText(15, 10, QString::fromStdString(std::to_string(selectGroup->childShapes.size())));
     painter.drawText(35, 10, QString::fromStdString(std::to_string(hasFocus())));
 
-    ShapePtrVctr shapeOrdered;
-    for(auto& obj:shapes) {
-        //if()
-    }
-
     for(auto& obj:shapes) {
         obj->draw(&painter);
     }
@@ -136,7 +131,7 @@ void RenderArea::mouseMoveEvent(QMouseEvent *event) {
             }
         }
 
-        event->setLocalPos({eventOrig.x, eventOrig.y});
+        event->setLocalPos({eventOrig.x, eventOrig.y}); //make the new group the active shape?
     }
 
     for(auto& obj:shapes) {
@@ -181,7 +176,7 @@ void RenderArea::keyPressEvent(QKeyEvent *event) {
         break;
     case(Qt::Key_E):
         shapeToggled = ShapeName::Ellipse;
-    break;
+        break;
     case(Qt::Key_L):
         shapeToggled = ShapeName::Line;
         break;
@@ -194,7 +189,6 @@ void RenderArea::keyPressEvent(QKeyEvent *event) {
     default:
         break;
     }
-    updateMasterState();
 }
 
 void RenderArea::colorPenOpened() {
@@ -236,10 +230,15 @@ void RenderArea::updateMasterState() { //stuff that continually needs to be redo
 }
 
 void RenderArea::disbandGroup() {
-    for(auto& obj:selectGroup->childShapes) {
-        shapes.push_back(std::move(obj));
-    }
-    selectGroup->childShapes.clear();
+    ShapePtrVctr returnShapes = activeShape->disband();
+//    for(auto& obj:returnShapes) {
+//        shapes.push_back(std::move(obj));
+//    }
+//    selectGroup->tile();
+}
+
+void RenderArea::tileStart() {
+
 }
 
 template<typename T>

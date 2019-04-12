@@ -13,6 +13,9 @@ public:
     void mouseMoveEvent(QMouseEvent *event) override;
     void translate(Vec2d translateBy) override;
     bool isClickedOn(QMouseEvent *event) override;
+    void fixOffscreen() override;
+    virtual Ellipse* clone_impl() const override { return new Ellipse(*this); }
+    ShapePtrVctr disband() override;
     std::vector<Vec2d> param();
 
 private:

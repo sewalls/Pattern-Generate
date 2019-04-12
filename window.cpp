@@ -13,6 +13,7 @@ Window::Window() {
     QActionGroup *shapeBar = new QActionGroup(this);
     QActionGroup *groupBar = new QActionGroup(this);
     QActionGroup *colorBar = new QActionGroup(this);
+    QActionGroup *tileBar  = new QActionGroup(this);
 
     chooseMenu = menuBar->addMenu("Shape");
     addAction(SLOT(ellipseTrigger()), "Ellipse", shapeBar, true);
@@ -27,6 +28,9 @@ Window::Window() {
 
     chooseMenu = menuBar->addMenu("Group");
     addAction(SLOT(disbandGroup()), "Delete Group", groupBar, false);
+
+    chooseMenu = menuBar->addMenu("Tile");
+    addAction(SLOT(tileStart()), "Tile", tileBar, false);
 
     this->layout()->setMenuBar(menuBar);
     this->setStyleSheet("background-color: white;");

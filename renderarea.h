@@ -39,6 +39,7 @@ public slots:
     void selectTrigger() { shapeToggled = ShapeName::Select; }
     void colorPenOpened();
     void colorBrushOpened();
+    void tileStart();
     void disbandGroup();
 
 public: //remake private

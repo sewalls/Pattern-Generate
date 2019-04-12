@@ -63,3 +63,22 @@ void Rectangle::translate(Vec2d translateBy) {
     p1.translate(translateBy.x, translateBy.y);
     p2.translate(translateBy.x, translateBy.y);
 }
+
+void Rectangle::fixOffscreen() {
+    if(std::min(p1.x, p2.x) > 1600) {
+        translate({-1600, 0});
+    }
+    if(std::min(p1.y, p2.y) > 900) {
+        translate({0, -900});
+    }
+    if(std::max(p1.x, p2.x) < 0) {
+        translate({1600, 0});
+    }
+    if(std::max(p1.y, p2.y) < 0) {
+        translate({0, 900});
+    }
+}
+
+ShapePtrVctr Rectangle::disband() {
+
+}

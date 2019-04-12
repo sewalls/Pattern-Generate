@@ -8,10 +8,14 @@
 
 enum class State { Precreated, Creating, Moving, Finished };
 
+class Shape;
+typedef std::vector<std::unique_ptr<Shape>> ShapePtrVctr;
+
 class Shape
 {
 public:
     Shape();
+
     virtual ~Shape() = 0;
 
     virtual void draw(QPainter *painter) = 0;
@@ -22,6 +26,8 @@ public:
     virtual void changePen(QPen pen) {this->pen = pen;}
     virtual void changeBrush(QBrush brush) {this->brush = brush;}
     virtual bool isClickedOn(QMouseEvent *event) = 0;
+    virtual void fixOffscreen() = 0;
+    virtual ShapePtrVctr disband() = 0;
 
     State currentState = State::Precreated;
     Vec2d movePoint;
@@ -31,8 +37,10 @@ public:
 
     QPen pen;
     QBrush brush;
-};
 
-typedef std::vector<std::unique_ptr<Shape>> ShapePtrVctr;
+    auto clone() const { return std::unique_ptr<Shape>(clone_impl()); } //copy code
+protected:
+    virtual Shape* clone_impl() const = 0;
+};
 
 #endif // SHAPE_H
