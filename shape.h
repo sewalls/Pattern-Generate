@@ -19,6 +19,7 @@ public:
     virtual ~Shape() = 0;
 
     virtual void draw(QPainter *painter) = 0;
+    virtual void drawOffset(QPainter *painter, Vec2d offset) = 0;
     virtual void mousePressEvent(QMouseEvent *event) = 0;
     virtual void mouseMoveEvent(QMouseEvent *event) = 0;
     virtual void mouseReleaseEvent(QMouseEvent *);
@@ -26,7 +27,9 @@ public:
     virtual void changePen(QPen pen) {this->pen = pen;}
     virtual void changeBrush(QBrush brush) {this->brush = brush;}
     virtual bool isClickedOn(QMouseEvent *event) = 0;
+    virtual std::vector<Vec2d> boundingRect() = 0;
     virtual void fixOffscreen() = 0;
+    virtual void normalize() = 0;
     virtual ShapePtrVctr disband() = 0;
 
     State currentState = State::Precreated;

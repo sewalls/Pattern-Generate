@@ -13,6 +13,28 @@ void Polygon::draw(QPainter *painter) {
     painter->fillPath(path, brush);
 }
 
+void Polygon::drawOffset(QPainter *painter, Vec2d offset) {
+    QPainterPath newPath = path;
+    newPath.translate(offset.x, offset.y);
+    brush.setStyle(Qt::SolidPattern);
+    painter->setPen(pen);
+    painter->setBrush(brush);
+    painter->drawPath(newPath);
+    painter->fillPath(newPath, brush);
+}
+
+std::vector<Vec2d> Polygon::boundingRect() {
+    Vec2d p1 = {0, 0};
+    Vec2d p2 = {0, 0};
+
+    for(int i = 0; i < path.elementCount(); i++) {
+        //p1 = {std::max(p1.x, path.elementAt(i).x), std::max(p1.y, path.elementAt(i).y)};
+        p2 = {std::max(p2.x, path.elementAt(i).x), std::max(p2.y, path.elementAt(i).y)};
+    }
+
+    return {p1, p2};
+}
+
 void Polygon::mousePressEvent(QMouseEvent *event) {
     switch(currentState) {
     case State::Precreated:
@@ -104,7 +126,12 @@ void Polygon::fixOffscreen() {
     }
     if(largestY < 0) {
         translate({0, 900});
-    }}
+    }
+}
+
+void Polygon::normalize() {
+
+}
 
 void Polygon::translate(Vec2d translateBy) {
     path.translate(translateBy.x, translateBy.y);

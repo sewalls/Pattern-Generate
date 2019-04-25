@@ -10,6 +10,15 @@ void Line::draw(QPainter *painter) {
     painter->drawLine(QLineF{p1.x, p1.y, p2.x, p2.y});
 }
 
+void Line::drawOffset(QPainter *painter, Vec2d offset) {
+    painter->setPen(pen);
+    painter->drawLine(QLineF{p1.x + offset.x, p1.y + offset.y, p2.x + offset.x, p2.y + offset.y});
+}
+
+std::vector<Vec2d> Line::boundingRect() {
+    return {{std::min(p1.x, p2.x), std::min(p1.y, p2.y)}, {std::max(p1.x, p2.x), std::max(p1.y, p2.y)}};
+}
+
 void Line::mousePressEvent(QMouseEvent *event) {
     switch(currentState) {
     case State::Precreated:
@@ -80,6 +89,10 @@ void Line::fixOffscreen() {
     if(std::max(p1.y, p2.y) < 0) {
         translate({0, 900});
     }
+}
+
+void Line::normalize() {
+
 }
 
 ShapePtrVctr Line::disband() {

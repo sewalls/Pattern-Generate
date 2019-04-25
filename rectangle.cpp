@@ -6,11 +6,22 @@ Rectangle::Rectangle()
 }
 
 void Rectangle::draw(QPainter *painter) {
-    Vec2d center = {(p1.x + p2.x) / 2, (p1.y + p2.y) / 2};
     brush.setStyle(Qt::SolidPattern);
     painter->setPen(pen);
     painter->setBrush(brush);
     painter->drawRect(QRectF{p1.x, p1.y, p2.x - p1.x, p2.y - p1.y});
+    //painter->drawRect(0, 0, boundingRect()[1].x, boundingRect()[1].y);
+}
+
+void Rectangle::drawOffset(QPainter *painter, Vec2d offset) {
+    brush.setStyle(Qt::SolidPattern);
+    painter->setPen(pen);
+    painter->setBrush(brush);
+    painter->drawRect(QRectF{p1.x + offset.x, p1.y + offset.y, p2.x - p1.x, p2.y - p1.y});
+}
+
+std::vector<Vec2d> Rectangle::boundingRect() {
+    return {{std::min(p1.x, p2.x), std::min(p1.y, p2.y)}, {std::max(p1.x, p2.x), std::max(p1.y, p2.y)}};
 }
 
 void Rectangle::mousePressEvent(QMouseEvent *event) {
@@ -65,18 +76,33 @@ void Rectangle::translate(Vec2d translateBy) {
 }
 
 void Rectangle::fixOffscreen() {
-    if(std::min(p1.x, p2.x) > 1600) {
-        translate({-1600, 0});
+    if(std::min(p1.x, p2.x) > 1700) {
+        translate({-1800, 0});
     }
-    if(std::min(p1.y, p2.y) > 900) {
-        translate({0, -900});
+    if(std::min(p1.y, p2.y) > 1000) {
+        translate({0, -1100});
     }
-    if(std::max(p1.x, p2.x) < 0) {
-        translate({1600, 0});
+    if(std::max(p1.x, p2.x) < -100) {
+        translate({1800, 0});
     }
-    if(std::max(p1.y, p2.y) < 0) {
-        translate({0, 900});
+    if(std::max(p1.y, p2.y) < -100) {
+        translate({0, 1100});
     }
+}
+
+void Rectangle::normalize() {
+    Vec2d n1 = {std::min(p1.x, p2.x), std::min(p1.y, p2.y)};
+    Vec2d n2 = {std::max(p1.x, p2.x), std::max(p1.y, p2.y)};
+    p1 = n1;
+    p2 = n2;
+
+    double width = p2.x - p1.x;
+    double height = p2.y - p1.y;
+
+    p1.x = fmod(p1.x, 100);
+    p1.y = fmod(p1.y, 100);
+    p2.x = p1.x + width;
+    p2.y = p1.y + height;
 }
 
 ShapePtrVctr Rectangle::disband() {

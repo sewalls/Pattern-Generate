@@ -15,6 +15,18 @@ void Ellipse::draw(QPainter *painter) {
     painter->drawEllipse(QRectF{p1.x, p1.y, p2.x - p1.x, p2.y - p1.y});
 }
 
+void Ellipse::drawOffset(QPainter *painter, Vec2d offset) {
+    std::vector<Vec2d> points = param();
+    brush.setStyle(Qt::SolidPattern);
+    painter->setPen(pen);
+    painter->setBrush(brush);
+    painter->drawEllipse(QRectF{p1.x + offset.x, p1.y + offset.y, p2.x - p1.x, p2.y - p1.y});
+}
+
+std::vector<Vec2d> Ellipse::boundingRect() {
+    return {{std::min(p1.x, p2.x), std::min(p1.y, p2.y)}, {std::max(p1.x, p2.x), std::max(p1.y, p2.y)}};
+}
+
 void Ellipse::mousePressEvent(QMouseEvent *event) {
     switch(currentState) {
     case State::Precreated:
@@ -105,6 +117,10 @@ void Ellipse::fixOffscreen(){
     if(std::max(p1.y, p2.y) < 0) {
         translate({0, 900});
     }
+}
+
+void Ellipse::normalize() {
+
 }
 
 ShapePtrVctr Ellipse::disband() {

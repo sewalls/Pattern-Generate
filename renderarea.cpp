@@ -153,6 +153,7 @@ void RenderArea::mouseReleaseEvent(QMouseEvent *event) {
         group->index = group->childShapes[0]->index;
         group->changePen(pen);
         group->changeBrush(brush);
+        group->isTiling = selectGroup->isTiling;
         shapes.push_back(std::move(group));
     }
     for(auto& obj:shapes) {
@@ -186,6 +187,12 @@ void RenderArea::keyPressEvent(QKeyEvent *event) {
     case(Qt::Key_S):
         shapeToggled = ShapeName::Select;
         break;
+//    case(Qt::Key_Right):
+//        activeShape->translate({1, 0});
+//        break;
+//    case(Qt::Key_Left):
+//        activeShape->translate({-1, 0});
+//        break;
     default:
         break;
     }
@@ -231,14 +238,14 @@ void RenderArea::updateMasterState() { //stuff that continually needs to be redo
 
 void RenderArea::disbandGroup() {
     ShapePtrVctr returnShapes = activeShape->disband();
-//    for(auto& obj:returnShapes) {
-//        shapes.push_back(std::move(obj));
-//    }
-//    selectGroup->tile();
+    //    for(auto& obj:returnShapes) {
+    //        shapes.push_back(std::move(obj));
+    //    }
+    //    selectGroup->tile();
 }
 
 void RenderArea::tileStart() {
-
+    selectGroup->tile();
 }
 
 template<typename T>
