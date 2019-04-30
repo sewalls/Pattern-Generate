@@ -129,7 +129,7 @@ void Polygon::fixOffscreen() {
     }
 }
 
-void Polygon::normalize() {
+void Polygon::normalize(int scale) {
 
 }
 

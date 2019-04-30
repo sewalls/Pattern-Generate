@@ -16,8 +16,7 @@ public:
     bool isClickedOn(QMouseEvent *event) override;
     std::vector<Vec2d> boundingRect() override;
     void fixOffscreen() override;
-    void normalize() override;
-    virtual Ellipse* clone_impl() const override { return new Ellipse(*this); }
+    void normalize(int scale) override;
     ShapePtrVctr disband() override;
     std::vector<Vec2d> param();
 

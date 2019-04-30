@@ -54,6 +54,9 @@ void Ellipse::mouseMoveEvent(QMouseEvent *event) {
     switch(currentState) {
     case State::Creating:
         p2 = {event->localPos().x(), event->localPos().y()};
+        if(event->modifiers() == Qt::ShiftModifier) {
+            p2 = {event->localPos().x(), p1.y + (event->localPos().x() - p1.x)};
+        }
         break;
     case State::Moving: {
         translate({event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y});
@@ -119,7 +122,7 @@ void Ellipse::fixOffscreen(){
     }
 }
 
-void Ellipse::normalize() {
+void Ellipse::normalize(int scale) {
 
 }
 

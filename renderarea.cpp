@@ -6,8 +6,6 @@ RenderArea::RenderArea(QWidget *parent)
     setFocusPolicy(Qt::StrongFocus);
     setFocus();
 
-    grabKeyboard();
-
     pen.setColor(Qt::black);
     brush.setColor(Qt::transparent);
 
@@ -46,16 +44,6 @@ void RenderArea::mousePressEvent(QMouseEvent *event) {
         masterState = State::Finished;
 
         if(event->modifiers() == Qt::ControlModifier) {
-            setActiveShape(selectGroup.get());
-            for(unsigned int i = 0; i < shapes.size(); i++) {
-                if(shapes[i]->isClickedOn(event)) {
-                    selectGroup->childShapes.push_back(std::move(shapes[i]));
-                    shapes.erase(shapes.begin() + static_cast<int>(i));
-                }
-            }
-        }
-
-        if(event->modifiers() == Qt::ShiftModifier) {
             selectBox.currentState = State::Precreated;
             selectBox.mousePressEvent(event);
         }
@@ -103,7 +91,7 @@ void RenderArea::mousePressEvent(QMouseEvent *event) {
 }
 
 void RenderArea::mouseMoveEvent(QMouseEvent *event) {
-    if(shapeToggled == ShapeName::Select && event->modifiers() == Qt::ShiftModifier) {
+    if(shapeToggled == ShapeName::Select && event->modifiers() == Qt::ControlModifier) {
         Vec2d eventOrig = {event->localPos().x(), event->localPos().y()};
         selectBox.mouseMoveEvent(event);
         Vec2d p1 = {std::min(selectBox.p1.x, selectBox.p2.x), std::min(selectBox.p1.y, selectBox.p2.y)};
@@ -187,12 +175,12 @@ void RenderArea::keyPressEvent(QKeyEvent *event) {
     case(Qt::Key_S):
         shapeToggled = ShapeName::Select;
         break;
-//    case(Qt::Key_Right):
-//        activeShape->translate({1, 0});
-//        break;
-//    case(Qt::Key_Left):
-//        activeShape->translate({-1, 0});
-//        break;
+        //    case(Qt::Key_Right):
+        //        activeShape->translate({1, 0});
+        //        break;
+        //    case(Qt::Key_Left):
+        //        activeShape->translate({-1, 0});
+        //        break;
     default:
         break;
     }
@@ -210,9 +198,16 @@ void RenderArea::colorPenOpened() {
 void RenderArea::colorBrushOpened() {
     QColorDialog dialog;
     dialog.setOption(QColorDialog::ShowAlphaChannel);
-    brush.setColor(dialog.getColor(Qt::transparent, this, "Pick a Color", dialog.options()));
+    brush.setColor(dialog.getColor(Qt::white, this, "Pick a Color", dialog.options()));
     if(activeShape) {
         activeShape->changeBrush(brush);
+    }
+}
+
+void RenderArea::scalePrompt() {
+    QInputDialog dialog;
+    if(activeShape) {
+        activeShape->normalize(dialog.getInt(this, "Input Rotation", "title", 0, 0, 360, 1));
     }
 }
 
@@ -238,14 +233,13 @@ void RenderArea::updateMasterState() { //stuff that continually needs to be redo
 
 void RenderArea::disbandGroup() {
     ShapePtrVctr returnShapes = activeShape->disband();
-    //    for(auto& obj:returnShapes) {
-    //        shapes.push_back(std::move(obj));
-    //    }
-    //    selectGroup->tile();
+    for(auto& obj:returnShapes) {
+        shapes.push_back(std::move(obj));
+    }
 }
 
-void RenderArea::tileStart() {
-    selectGroup->tile();
+void RenderArea::tileStart() { //add tile func
+    activeShape->normalize(1);
 }
 
 template<typename T>

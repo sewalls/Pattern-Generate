@@ -17,11 +17,15 @@ public:
     Window();
     void addAction(const char *slot, QString actionName, QActionGroup *actionGroup, bool canCheck);
 
+public slots:
+    void backgroundTriggered();
+
 private:
     RenderArea *renderArea;
     QMenuBar *menuBar;
     QMenu *chooseMenu;
     QAction *menuAction;
+    QPalette pal;
 };
 
 #endif // WINDOW_H

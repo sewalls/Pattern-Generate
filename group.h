@@ -17,8 +17,7 @@ public:
     bool isClickedOn(QMouseEvent *event) override;
     std::vector<Vec2d> boundingRect() override;
     void fixOffscreen() override;
-    void normalize() override;
-    virtual Group* clone_impl() const override;
+    void normalize(int scale) override;
     ShapePtrVctr disband() override;
 
     ShapePtrVctr childShapes;

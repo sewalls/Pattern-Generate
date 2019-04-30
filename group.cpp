@@ -14,8 +14,6 @@ void Group::draw(QPainter *painter) {
             tileRect[1].y = std::max(tileRect[1].y, obj->boundingRect()[1].y);
         }
 
-        painter->drawRect(0, 0, tileRect[1].x, tileRect[1].y);
-
         for(auto& obj:childShapes) {
             for(double x = 0; x < 1600; x += tileRect[1].x) {
                 for(double y = 0; y < 900; y += tileRect[1].y) {
@@ -26,6 +24,7 @@ void Group::draw(QPainter *painter) {
             }
         }
     }
+
     if(!isTiling) {
         for(auto& obj:childShapes) {
             obj->changePen(pen);
@@ -93,9 +92,9 @@ bool Group::isClickedOn(QMouseEvent* event) {
 void Group::fixOffscreen() {
     //todo
 }
-
-void Group::normalize() {
-
+                                        //delete both
+void Group::normalize(int scale) {
+    isTiling = !isTiling;
 }
 
 void Group::translate(Vec2d translateBy) {
@@ -106,33 +105,13 @@ void Group::translate(Vec2d translateBy) {
 
 ShapePtrVctr Group::disband() {
     ShapePtrVctr returnShapes;
-    tile();
-    //    for(auto& obj:childShapes) {
-    //        returnShapes.push_back(std::move(obj));
-    //    }
-    //    childShapes.clear();
+    for(auto& obj:childShapes) {
+        returnShapes.push_back(std::move(obj));
+    }
+    childShapes.clear();
     return returnShapes;
 }
 
-Group* Group::clone_impl() const {
-    for(auto& obj:childShapes) {
-
-    }
-}
-
 void Group::tile() {
-    //    Group newGroup;
-    //    for(int x = 0; x < 18; x++) {
-    //        for(int y = 0; y < 11; y++) {
-    //            for(auto& obj:childShapes) {
-    //                std::unique_ptr<Shape> newShape = obj->clone();
-    //                newShape->translate({static_cast<double>(x * 100), static_cast<double>(y * 100)}); //dumb cast to get it to shut up
-    //                newGroup.childShapes.push_back(std::move(newShape));
-    //            }
-    //        }
-    //    }
-    //    for(auto& obj:newGroup.childShapes) {
-    //        childShapes.push_back(std::move(obj));
-    //    }
     isTiling = !isTiling;
 }

@@ -5,6 +5,7 @@
 #include <QPainter>
 #include <QMouseEvent>
 #include <QColorDialog>
+#include <QInputDialog>
 
 #include <memory>
 
@@ -41,6 +42,7 @@ public slots:
     void colorBrushOpened();
     void tileStart();
     void disbandGroup();
+    void scalePrompt();
 
 public: //remake private
     template<typename T>

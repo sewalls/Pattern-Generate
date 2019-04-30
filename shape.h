@@ -29,21 +29,17 @@ public:
     virtual bool isClickedOn(QMouseEvent *event) = 0;
     virtual std::vector<Vec2d> boundingRect() = 0;
     virtual void fixOffscreen() = 0;
-    virtual void normalize() = 0;
+    virtual void normalize(int scale) = 0;
     virtual ShapePtrVctr disband() = 0;
 
     State currentState = State::Precreated;
     Vec2d movePoint;
-    double  theta; //currently unused
+    double  theta = M_PI / 4; //currently unused
 
     unsigned int index;
 
     QPen pen;
     QBrush brush;
-
-    auto clone() const { return std::unique_ptr<Shape>(clone_impl()); } //copy code
-protected:
-    virtual Shape* clone_impl() const = 0;
 };
 
 #endif // SHAPE_H

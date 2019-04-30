@@ -13,7 +13,7 @@ Window::Window() {
     QActionGroup *shapeBar = new QActionGroup(this);
     QActionGroup *groupBar = new QActionGroup(this);
     QActionGroup *colorBar = new QActionGroup(this);
-    QActionGroup *tileBar  = new QActionGroup(this);
+    QActionGroup *editBar  = new QActionGroup(this);
 
     chooseMenu = menuBar->addMenu("Shape");
     addAction(SLOT(ellipseTrigger()), "Ellipse", shapeBar, true);
@@ -25,15 +25,21 @@ Window::Window() {
     chooseMenu = menuBar->addMenu("Color");
     addAction(SLOT(colorPenOpened()), "Choose Outline Color", colorBar, false);
     addAction(SLOT(colorBrushOpened()), "Choose Fill Color", colorBar, false);
+    menuAction = chooseMenu->addAction("Choose Background Color");
+    menuAction->setCheckable(false);
+    colorBar->addAction(menuAction);
+    connect(menuAction, SIGNAL(triggered()), this, SLOT(backgroundTriggered()));
 
     chooseMenu = menuBar->addMenu("Group");
     addAction(SLOT(disbandGroup()), "Delete Group", groupBar, false);
+    addAction(SLOT(tileStart()), "Tile", groupBar, false);
 
-    chooseMenu = menuBar->addMenu("Tile");
-    addAction(SLOT(tileStart()), "Tile", tileBar, false);
+    chooseMenu = menuBar->addMenu("Edit");
+    addAction(SLOT(scalePrompt()), "Scale", editBar, false);
 
-    this->layout()->setMenuBar(menuBar);
-    this->setStyleSheet("background-color: white;");
+    layout()->setMenuBar(menuBar);
+    pal.setColor(QPalette::Background, Qt::white);
+    setPalette(pal);
     setWindowTitle(tr("Draw"));
     setFixedSize(1600, 900);
 }
@@ -43,6 +49,12 @@ void Window::addAction(const char* slot, QString actionName, QActionGroup *actio
     menuAction->setCheckable(canCheck);
     actionGroup->addAction(menuAction);
     connect(menuAction, SIGNAL(triggered()), renderArea, slot);
+}
+
+void Window::backgroundTriggered() {
+    QColorDialog dialog;
+    pal.setColor(QPalette::Background, dialog.getColor(Qt::white, this, "Pick a Color", dialog.options()));
+    setPalette(pal);
 }
 
 

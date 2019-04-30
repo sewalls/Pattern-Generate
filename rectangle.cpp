@@ -9,8 +9,10 @@ void Rectangle::draw(QPainter *painter) {
     brush.setStyle(Qt::SolidPattern);
     painter->setPen(pen);
     painter->setBrush(brush);
+    painter->save();
+    painter->rotate((theta * 180) / M_PI);
     painter->drawRect(QRectF{p1.x, p1.y, p2.x - p1.x, p2.y - p1.y});
-    //painter->drawRect(0, 0, boundingRect()[1].x, boundingRect()[1].y);
+    painter->restore();
 }
 
 void Rectangle::drawOffset(QPainter *painter, Vec2d offset) {
@@ -51,6 +53,9 @@ void Rectangle::mouseMoveEvent(QMouseEvent *event) {
     switch(currentState) {
     case State::Creating:
         p2 = {event->localPos().x(), event->localPos().y()};
+        if(event->modifiers() == Qt::ShiftModifier) {
+            p2 = {event->localPos().x(), p1.y + (event->localPos().x() - p1.x)};
+        }
         break;
     case State::Moving:
         translate({event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y});
@@ -62,6 +67,7 @@ void Rectangle::mouseMoveEvent(QMouseEvent *event) {
 }
 
 bool Rectangle::isClickedOn(QMouseEvent *event) {
+
     if((event->localPos().x() > p2.x && event->localPos().x() < p1.x) || (event->localPos().x() > p1.x && event->localPos().x() < p2.x)) {
         if((event->localPos().y() > p2.y && event->localPos().y() < p1.y) || (event->localPos().y() > p1.y && event->localPos().y() < p2.y)) {
             return true;
@@ -90,19 +96,20 @@ void Rectangle::fixOffscreen() {
     }
 }
 
-void Rectangle::normalize() {
-    Vec2d n1 = {std::min(p1.x, p2.x), std::min(p1.y, p2.y)};
-    Vec2d n2 = {std::max(p1.x, p2.x), std::max(p1.y, p2.y)};
-    p1 = n1;
-    p2 = n2;
+void Rectangle::normalize(int scale) { //you made all the normalize functions have scale ints so that you didnt have to make a new shape scale function, fix this. see ifnormalize is needed at all anywhere
+//    Vec2d n1 = {std::min(p1.x, p2.x), std::min(p1.y, p2.y)};
+//    Vec2d n2 = {std::max(p1.x, p2.x), std::max(p1.y, p2.y)};
+//    p1 = n1;
+//    p2 = n2;
 
-    double width = p2.x - p1.x;
-    double height = p2.y - p1.y;
+//    double width = p2.x - p1.x;
+//    double height = p2.y - p1.y;
 
-    p1.x = fmod(p1.x, 100);
-    p1.y = fmod(p1.y, 100);
-    p2.x = p1.x + width;
-    p2.y = p1.y + height;
+//    p1.x = fmod(p1.x, 100);
+//    p1.y = fmod(p1.y, 100);
+//    p2.x = p1.x + width;
+//    p2.y = p1.y + height;
+    theta = scale;
 }
 
 ShapePtrVctr Rectangle::disband() {
