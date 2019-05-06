@@ -6,6 +6,9 @@ Group::Group()
 }
 
 void Group::draw(QPainter *painter) {
+    std::sort(childShapes.begin(), childShapes.end(), [](std::unique_ptr<Shape>& a, std::unique_ptr<Shape>& b) {
+        return a->index < b->index;
+    });
     brush.setStyle(Qt::SolidPattern);
     if(isTiling) {
         std::vector<Vec2d> tileRect = {{0, 0}, {0, 0}};
@@ -17,9 +20,7 @@ void Group::draw(QPainter *painter) {
         for(auto& obj:childShapes) {
             for(double x = 0; x < 1600; x += tileRect[1].x) {
                 for(double y = 0; y < 900; y += tileRect[1].y) {
-                    obj->changePen(pen);
-                    obj->changeBrush(brush);
-                    obj->drawOffset(painter, {x, y});
+                    obj->draw(painter, {x, y});
                 }
             }
         }
@@ -27,21 +28,17 @@ void Group::draw(QPainter *painter) {
 
     if(!isTiling) {
         for(auto& obj:childShapes) {
-            obj->changePen(pen);
-            obj->changeBrush(brush);
             obj->draw(painter);
         }
     }
 }
 
-void Group::drawOffset(QPainter *painter, Vec2d offset) {
-    if(!isTiling) {
-        for(auto& obj:childShapes) {
-            obj->changePen(pen);
-            obj->changeBrush(brush);
-            obj->drawOffset(painter, offset);
-        }
-    }
+void Group::draw(QPainter *painter, Vec2d offset) {
+//    if(!isTiling) {
+//        for(auto& obj:childShapes) {
+//            obj->draw(painter, offset);
+//        }
+//    }
 }
 
 std::vector<Vec2d> Group::boundingRect() {
@@ -59,7 +56,7 @@ void Group::mousePressEvent(QMouseEvent *event) {
     switch(currentState) {
     case State::Moving:
         if(isClickedOn(event)) {
-            movePoint = {event->localPos().x(), event->localPos().y()};
+            movePoint = {EX, EY};
         }
         else {
             currentState = State::Finished;
@@ -72,8 +69,8 @@ void Group::mousePressEvent(QMouseEvent *event) {
 
 void Group::mouseMoveEvent(QMouseEvent *event) {
     if(currentState == State::Moving) {
-        translate({event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y});
-        movePoint = {event->localPos().x(), event->localPos().y()};
+        translate({EX - movePoint.x, EY - movePoint.y});
+        movePoint = {EX, EY};
     }
 }
 
@@ -87,14 +84,6 @@ bool Group::isClickedOn(QMouseEvent* event) {
     }
 
     return isClicked;
-}
-
-void Group::fixOffscreen() {
-    //todo
-}
-                                        //delete both
-void Group::normalize(int scale) {
-    isTiling = !isTiling;
 }
 
 void Group::translate(Vec2d translateBy) {

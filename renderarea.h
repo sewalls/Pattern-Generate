@@ -6,6 +6,7 @@
 #include <QMouseEvent>
 #include <QColorDialog>
 #include <QInputDialog>
+#include <QGuiApplication>
 
 #include <memory>
 
@@ -43,6 +44,11 @@ public slots:
     void tileStart();
     void disbandGroup();
     void scalePrompt();
+    void bringToFront();
+    void bringForward();
+    void bringBackward();
+    void bringToBack();
+    void screenTest();
 
 public: //remake private
     template<typename T>
@@ -50,6 +56,7 @@ public: //remake private
 
     void setActiveShape(Shape *shape);
     void updateMasterState();
+    unsigned int activeShapePosition();
 
     unsigned int masterIndex = 0;
 

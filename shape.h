@@ -6,6 +6,9 @@
 #include <memory>
 #include "vec2dfuncs.h"
 
+#define EX event->localPos().x()
+#define EY event->localPos().y()
+
 enum class State { Precreated, Creating, Moving, Finished };
 
 class Shape;
@@ -19,7 +22,7 @@ public:
     virtual ~Shape() = 0;
 
     virtual void draw(QPainter *painter) = 0;
-    virtual void drawOffset(QPainter *painter, Vec2d offset) = 0;
+    virtual void draw(QPainter *painter, Vec2d offset) = 0;
     virtual void mousePressEvent(QMouseEvent *event) = 0;
     virtual void mouseMoveEvent(QMouseEvent *event) = 0;
     virtual void mouseReleaseEvent(QMouseEvent *);
@@ -28,16 +31,12 @@ public:
     virtual void changeBrush(QBrush brush) {this->brush = brush;}
     virtual bool isClickedOn(QMouseEvent *event) = 0;
     virtual std::vector<Vec2d> boundingRect() = 0;
-    virtual void fixOffscreen() = 0;
-    virtual void normalize(int scale) = 0;
     virtual ShapePtrVctr disband() = 0;
+    virtual void tile() = 0;
 
     State currentState = State::Precreated;
     Vec2d movePoint;
-    double  theta = M_PI / 4; //currently unused
-
     unsigned int index;
-
     QPen pen;
     QBrush brush;
 };

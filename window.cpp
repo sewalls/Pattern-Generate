@@ -35,7 +35,11 @@ Window::Window() {
     addAction(SLOT(tileStart()), "Tile", groupBar, false);
 
     chooseMenu = menuBar->addMenu("Edit");
-    addAction(SLOT(scalePrompt()), "Scale", editBar, false);
+    addAction(SLOT(screenTest()), "Scale", editBar, false);
+    addAction(SLOT(bringToFront()), "Bring Shape to Front", editBar, false);
+    addAction(SLOT(bringForward()), "Bring Shape Forward", editBar, false);
+    addAction(SLOT(bringBackward()), "Push Shape Backwards", editBar, false);
+    addAction(SLOT(bringToBack()), "Push Shape to Back", editBar, false);
 
     layout()->setMenuBar(menuBar);
     pal.setColor(QPalette::Background, Qt::white);

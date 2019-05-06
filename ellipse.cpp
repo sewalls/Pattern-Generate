@@ -15,7 +15,7 @@ void Ellipse::draw(QPainter *painter) {
     painter->drawEllipse(QRectF{p1.x, p1.y, p2.x - p1.x, p2.y - p1.y});
 }
 
-void Ellipse::drawOffset(QPainter *painter, Vec2d offset) {
+void Ellipse::draw(QPainter *painter, Vec2d offset) {
     std::vector<Vec2d> points = param();
     brush.setStyle(Qt::SolidPattern);
     painter->setPen(pen);
@@ -30,8 +30,8 @@ std::vector<Vec2d> Ellipse::boundingRect() {
 void Ellipse::mousePressEvent(QMouseEvent *event) {
     switch(currentState) {
     case State::Precreated:
-        p1 = {event->localPos().x(), event->localPos().y()};
-        p2 = {event->localPos().x(), event->localPos().y()};
+        p1 = {EX, EY};
+        p2 = {EX, EY};
         currentState = State::Creating;
         break;
     case State::Creating:
@@ -39,7 +39,7 @@ void Ellipse::mousePressEvent(QMouseEvent *event) {
         break;
     case State::Moving:
         if(isClickedOn(event)) {
-            movePoint = {event->localPos().x(), event->localPos().y()};
+            movePoint = {EX, EY};
         }
         else {
             currentState = State::Finished;
@@ -53,14 +53,14 @@ void Ellipse::mousePressEvent(QMouseEvent *event) {
 void Ellipse::mouseMoveEvent(QMouseEvent *event) {
     switch(currentState) {
     case State::Creating:
-        p2 = {event->localPos().x(), event->localPos().y()};
+        p2 = {EX, EY};
         if(event->modifiers() == Qt::ShiftModifier) {
-            p2 = {event->localPos().x(), p1.y + (event->localPos().x() - p1.x)};
+            p2 = {EX, p1.y + (EX - p1.x)};
         }
         break;
     case State::Moving: {
-        translate({event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y});
-        movePoint = {event->localPos().x(), event->localPos().y()};
+        translate({EX - movePoint.x, EY - movePoint.y});
+        movePoint = {EX, EY};
         break;
     }
     default:
@@ -84,8 +84,8 @@ std::vector<Vec2d> Ellipse::param() {
 
 bool Ellipse::isClickedOn(QMouseEvent *event) {
     std::vector<Vec2d> points = param();
-    Vec2d u = {event->localPos().x(), event->localPos().y()};
-    Vec2d v = {event->localPos().x() + 10000, event->localPos().y()};
+    Vec2d u = {EX, EY};
+    Vec2d v = {EX + 10000, EY};
 
     int count = 0;
 
@@ -107,26 +107,6 @@ void Ellipse::translate(Vec2d translateBy) {
     p2.translate(translateBy.x, translateBy.y);
 }
 
-void Ellipse::fixOffscreen(){
-    if(std::min(p1.x, p2.x) > 1600) {
-        translate({-1600, 0});
-    }
-    if(std::min(p1.y, p2.y) > 900) {
-        translate({0, -900});
-    }
-    if(std::max(p1.x, p2.x) < 0) {
-        translate({1600, 0});
-    }
-    if(std::max(p1.y, p2.y) < 0) {
-        translate({0, 900});
-    }
-}
-
-void Ellipse::normalize(int scale) {
-
-}
-
-ShapePtrVctr Ellipse::disband() {
-
-}
+ShapePtrVctr Ellipse::disband() {return ShapePtrVctr{};}
+void Ellipse::tile() {}
 

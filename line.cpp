@@ -10,7 +10,7 @@ void Line::draw(QPainter *painter) {
     painter->drawLine(QLineF{p1.x, p1.y, p2.x, p2.y});
 }
 
-void Line::drawOffset(QPainter *painter, Vec2d offset) {
+void Line::draw(QPainter *painter, Vec2d offset) {
     painter->setPen(pen);
     painter->drawLine(QLineF{p1.x + offset.x, p1.y + offset.y, p2.x + offset.x, p2.y + offset.y});
 }
@@ -22,8 +22,8 @@ std::vector<Vec2d> Line::boundingRect() {
 void Line::mousePressEvent(QMouseEvent *event) {
     switch(currentState) {
     case State::Precreated:
-        p1 = {event->localPos().x(), event->localPos().y()};
-        p2 = {event->localPos().x(), event->localPos().y()};
+        p1 = {EX, EY};
+        p2 = {EX, EY};
         currentState = State::Creating;
         break;
     case State::Creating:
@@ -31,7 +31,7 @@ void Line::mousePressEvent(QMouseEvent *event) {
         break;
     case State::Moving:
         if(isClickedOn(event)) {
-            movePoint = {event->localPos().x(), event->localPos().y()};
+            movePoint = {EX, EY};
         }
         else {
             currentState = State::Finished;
@@ -45,14 +45,25 @@ void Line::mousePressEvent(QMouseEvent *event) {
 void Line::mouseMoveEvent(QMouseEvent *event) {
     switch(currentState) {
     case State::Creating:
-        p2 = {event->localPos().x(), event->localPos().y()};
+        p2 = {EX, EY};
         if(event->modifiers() == Qt::ShiftModifier) {
-            p2 = {event->localPos().x(), p1.y + (event->localPos().x() - p1.x)};
+            if(EX > p1.x && EY > p1.y) {
+                p2 = {EX, p1.y + (EX - p1.x)};
+            }
+            if(EX < p1.x && EY > p1.y) {
+                p2 = {EX, p1.y - (EX - p1.x)};
+            }
+            if(EX > p1.x && EY < p1.y) {
+                p2 = {EX, p1.y - (EX - p1.x)};
+            }
+            if(EX < p1.x && EY < p1.y) {
+                p2 = {EX, p1.y + (EX - p1.x)};
+            }
         }
         break;
     case State::Moving: {
-        translate({event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y});
-        movePoint = {event->localPos().x(), event->localPos().y()};
+        translate({EX - movePoint.x, EY - movePoint.y});
+        movePoint = {EX, EY};
         break;
     }
     default:
@@ -61,7 +72,7 @@ void Line::mouseMoveEvent(QMouseEvent *event) {
 }
 
 bool Line::isClickedOn(QMouseEvent* event) {
-    Vec2d p = {event->localPos().x(), event->localPos().y()};
+    Vec2d p = {EX, EY};
     Vec2d b;
     double t = ((p - p1) * (p2 - p1)) / ((p2 - p1).lengthSquared());
 
@@ -79,25 +90,5 @@ void Line::translate(Vec2d translateBy) {
     p2.translate(translateBy.x, translateBy.y);
 }
 
-void Line::fixOffscreen() {
-    if(std::min(p1.x, p2.x) > 1600) {
-        translate({-1600, 0});
-    }
-    if(std::min(p1.y, p2.y) > 900) {
-        translate({0, -900});
-    }
-    if(std::max(p1.x, p2.x) < 0) {
-        translate({1600, 0});
-    }
-    if(std::max(p1.y, p2.y) < 0) {
-        translate({0, 900});
-    }
-}
-
-void Line::normalize(int scale) {
-
-}
-
-ShapePtrVctr Line::disband() {
-
-}
+ShapePtrVctr Line::disband() {return ShapePtrVctr{};}
+void Line::tile() {}

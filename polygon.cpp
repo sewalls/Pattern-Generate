@@ -13,7 +13,7 @@ void Polygon::draw(QPainter *painter) {
     painter->fillPath(path, brush);
 }
 
-void Polygon::drawOffset(QPainter *painter, Vec2d offset) {
+void Polygon::draw(QPainter *painter, Vec2d offset) {
     QPainterPath newPath = path;
     newPath.translate(offset.x, offset.y);
     brush.setStyle(Qt::SolidPattern);
@@ -38,22 +38,22 @@ std::vector<Vec2d> Polygon::boundingRect() {
 void Polygon::mousePressEvent(QMouseEvent *event) {
     switch(currentState) {
     case State::Precreated:
-        path.moveTo(event->localPos().x(), event->localPos().y());
+        path.moveTo(EX, EY);
         currentState = State::Creating;
         break;
     case State::Creating:
-        if(std::abs(event->localPos().x() - path.elementAt(0).x) < 5 ||
-                std::abs(event->localPos().y() - path.elementAt(0).y) < 5) {
+        if(std::abs(EX - path.elementAt(0).x) < 5 ||
+                std::abs(EY - path.elementAt(0).y) < 5) {
             path.closeSubpath();
             currentState = State::Finished;
         }
         else {
-            path.lineTo(event->localPos().x(), event->localPos().y());
+            path.lineTo(EX, EY);
         }
         break;
     case State::Moving:
         if(isClickedOn(event)) {
-            movePoint = {event->localPos().x(), event->localPos().y()};
+            movePoint = {EX, EY};
         }
         else {
             currentState = State::Finished;
@@ -69,8 +69,8 @@ void Polygon::mouseMoveEvent(QMouseEvent *event) {
     case State::Creating:
         break;
     case State::Moving: {
-        translate({event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y});
-        movePoint = {event->localPos().x(), event->localPos().y()};
+        translate({EX - movePoint.x, EY - movePoint.y});
+        movePoint = {EX, EY};
         break;
     }
     default:
@@ -85,8 +85,8 @@ void Polygon::mouseReleaseEvent(QMouseEvent *) {
 }
 
 bool Polygon::isClickedOn(QMouseEvent *event) {
-    Vec2d u = {event->localPos().x(), event->localPos().y()};
-    Vec2d v = {event->localPos().x() + 10000, event->localPos().y()};
+    Vec2d u = {EX, EY};
+    Vec2d v = {EX + 10000, EY};
 
     int count = 0;
 
@@ -103,40 +103,9 @@ bool Polygon::isClickedOn(QMouseEvent *event) {
     return count % 2;
 }
 
-void Polygon::fixOffscreen() {
-    double smallestX = path.elementAt(0).x;
-    double largestX  = path.elementAt(0).x;
-    double smallestY = path.elementAt(0).y;
-    double largestY  = path.elementAt(0).y;
-    for(int i = 1; i < path.elementCount(); i++) {
-        smallestX = std::min(smallestX, path.elementAt(i).x);
-        largestX  = std::max(largestX, path.elementAt(i).x);
-        smallestY = std::min(smallestY, path.elementAt(i).y);
-        largestY  = std::max(largestY, path.elementAt(i).y);
-    }
-
-    if(smallestX > 1600) {
-        translate({-1600, 0});
-    }
-    if(smallestY > 900) {
-        translate({0, -900});
-    }
-    if(largestX < 0) {
-        translate({1600, 0});
-    }
-    if(largestY < 0) {
-        translate({0, 900});
-    }
-}
-
-void Polygon::normalize(int scale) {
-
-}
-
 void Polygon::translate(Vec2d translateBy) {
     path.translate(translateBy.x, translateBy.y);
 }
 
-ShapePtrVctr Polygon::disband() {
-
-}
+ShapePtrVctr Polygon::disband() {return ShapePtrVctr{};}
+void Polygon::tile() {}

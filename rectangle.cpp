@@ -9,13 +9,10 @@ void Rectangle::draw(QPainter *painter) {
     brush.setStyle(Qt::SolidPattern);
     painter->setPen(pen);
     painter->setBrush(brush);
-    painter->save();
-    painter->rotate((theta * 180) / M_PI);
     painter->drawRect(QRectF{p1.x, p1.y, p2.x - p1.x, p2.y - p1.y});
-    painter->restore();
 }
 
-void Rectangle::drawOffset(QPainter *painter, Vec2d offset) {
+void Rectangle::draw(QPainter *painter, Vec2d offset) {
     brush.setStyle(Qt::SolidPattern);
     painter->setPen(pen);
     painter->setBrush(brush);
@@ -29,8 +26,8 @@ std::vector<Vec2d> Rectangle::boundingRect() {
 void Rectangle::mousePressEvent(QMouseEvent *event) {
     switch(currentState) {
     case State::Precreated:
-        p1 = {event->localPos().x(), event->localPos().y()};
-        p2 = {event->localPos().x(), event->localPos().y()};
+        p1 = {EX, EY};
+        p2 = {EX, EY};
         currentState = State::Creating;
         break;
     case State::Creating:
@@ -38,7 +35,7 @@ void Rectangle::mousePressEvent(QMouseEvent *event) {
         break;
     case State::Moving:
         if(isClickedOn(event)) {
-            movePoint = {event->localPos().x(), event->localPos().y()};
+            movePoint = {EX, EY};
         }
         else {
             currentState = State::Finished;
@@ -52,14 +49,14 @@ void Rectangle::mousePressEvent(QMouseEvent *event) {
 void Rectangle::mouseMoveEvent(QMouseEvent *event) {
     switch(currentState) {
     case State::Creating:
-        p2 = {event->localPos().x(), event->localPos().y()};
+        p2 = {EX, EY};
         if(event->modifiers() == Qt::ShiftModifier) {
-            p2 = {event->localPos().x(), p1.y + (event->localPos().x() - p1.x)};
+            p2 = {EX, p1.y + (EX - p1.x)};
         }
         break;
     case State::Moving:
-        translate({event->localPos().x() - movePoint.x, event->localPos().y() - movePoint.y});
-        movePoint = {event->localPos().x(), event->localPos().y()};
+        translate({EX - movePoint.x, EY - movePoint.y});
+        movePoint = {EX, EY};
         break;
     default:
         break;
@@ -68,8 +65,8 @@ void Rectangle::mouseMoveEvent(QMouseEvent *event) {
 
 bool Rectangle::isClickedOn(QMouseEvent *event) {
 
-    if((event->localPos().x() > p2.x && event->localPos().x() < p1.x) || (event->localPos().x() > p1.x && event->localPos().x() < p2.x)) {
-        if((event->localPos().y() > p2.y && event->localPos().y() < p1.y) || (event->localPos().y() > p1.y && event->localPos().y() < p2.y)) {
+    if((EX > p2.x && EX < p1.x) || (EX > p1.x && EX < p2.x)) {
+        if((EY > p2.y && EY < p1.y) || (EY > p1.y && EY < p2.y)) {
             return true;
         }
     }
@@ -81,22 +78,7 @@ void Rectangle::translate(Vec2d translateBy) {
     p2.translate(translateBy.x, translateBy.y);
 }
 
-void Rectangle::fixOffscreen() {
-    if(std::min(p1.x, p2.x) > 1700) {
-        translate({-1800, 0});
-    }
-    if(std::min(p1.y, p2.y) > 1000) {
-        translate({0, -1100});
-    }
-    if(std::max(p1.x, p2.x) < -100) {
-        translate({1800, 0});
-    }
-    if(std::max(p1.y, p2.y) < -100) {
-        translate({0, 1100});
-    }
-}
-
-void Rectangle::normalize(int scale) { //you made all the normalize functions have scale ints so that you didnt have to make a new shape scale function, fix this. see ifnormalize is needed at all anywhere
+//void Rectangle::normalize(int scale) { //you made all the normalize functions have scale ints so that you didnt have to make a new shape scale function, fix this. see ifnormalize is needed at all anywhere
 //    Vec2d n1 = {std::min(p1.x, p2.x), std::min(p1.y, p2.y)};
 //    Vec2d n2 = {std::max(p1.x, p2.x), std::max(p1.y, p2.y)};
 //    p1 = n1;
@@ -109,9 +91,7 @@ void Rectangle::normalize(int scale) { //you made all the normalize functions ha
 //    p1.y = fmod(p1.y, 100);
 //    p2.x = p1.x + width;
 //    p2.y = p1.y + height;
-    theta = scale;
-}
+//}
 
-ShapePtrVctr Rectangle::disband() {
-
-}
+ShapePtrVctr Rectangle::disband() {return ShapePtrVctr{};}
+void Rectangle::tile() {}
