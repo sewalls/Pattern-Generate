@@ -10,6 +10,8 @@ public:
 
     void draw(QPainter *painter) override;
     void draw(QPainter *painter, Vec2d offset) override;
+    void changePen(QPen pen) override;
+    void changeBrush(QBrush brush) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void translate(Vec2d translateBy) override;

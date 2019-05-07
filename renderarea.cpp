@@ -117,7 +117,6 @@ void RenderArea::mouseMoveEvent(QMouseEvent *event) {
             }
         }
 
-        activeShape = selectGroup.get();
         event->setLocalPos({eventOrig.x, eventOrig.y}); //make the new group the active shape?
     }
 
@@ -133,6 +132,7 @@ void RenderArea::mouseReleaseEvent(QMouseEvent *event) {
     selectBox.p2 = {0, 0};
     if(selectGroup->childShapes.size() > 0) {
         std::unique_ptr<Group> group = std::make_unique<Group>();
+        activeShape = group.get();
         for(unsigned int i = 0; i < selectGroup->childShapes.size(); i++) {
             group->childShapes.push_back(std::move(selectGroup->childShapes[i]));
         }
@@ -160,36 +160,50 @@ void RenderArea::keyPressEvent(QKeyEvent *event) {
         activeShape = nullptr;
         updateMasterState();
         break;
+    case(Qt::Key_Backspace):
+        shapes.erase(shapes.begin() + static_cast<int>(activeShapePosition()));
+        masterState = State::Finished;
+        activeShape = nullptr;
+        update();
+        break;
     case(Qt::Key_R):
-        shapeToggled = ShapeName::Rectangle;
+        rectangleTrigger();
         break;
     case(Qt::Key_E):
-        shapeToggled = ShapeName::Ellipse;
+        ellipseTrigger();
         break;
     case(Qt::Key_L):
-        shapeToggled = ShapeName::Line;
+        lineTrigger();
         break;
     case(Qt::Key_P):
-        shapeToggled = ShapeName::Polygon;
+        polygonTrigger();
         break;
     case(Qt::Key_S):
-        shapeToggled = ShapeName::Select;
+        selectTrigger();
         break;
     case(Qt::Key_Right):
-        activeShape->translate({1, 0});
-        update();
+        if(activeShape) {
+            activeShape->translate({1, 0});
+            update();
+        }
         break;
     case(Qt::Key_Left):
-        activeShape->translate({-1, 0});
-        update();
+        if(activeShape) {
+            activeShape->translate({-1, 0});
+            update();
+        }
         break;
     case(Qt::Key_Up):
-        activeShape->translate({0, -1});
-        update();
+        if(activeShape) {
+            activeShape->translate({0, -1});
+            update();
+        }
         break;
     case(Qt::Key_Down):
-        activeShape->translate({0, 1});
-        update();
+        if(activeShape) {
+            activeShape->translate({0, 1});
+            update();
+        }
         break;
     default:
         break;
@@ -318,6 +332,32 @@ void RenderArea::screenTest() {
     string.append(".png");
     this->render(&pixmap);
     pixmap.save(string);
+}
+
+void RenderArea::shapeToggleTrigger(ShapeName newShape) {
+    if(shapeToggled == ShapeName::Polygon) {
+        if(activeShape) {
+            activeShape->disband();
+        }
+        masterState = State::Finished;
+    }
+    shapeToggled = newShape;
+}
+
+void RenderArea::ellipseTrigger() {
+    shapeToggleTrigger(ShapeName::Ellipse);
+}
+void RenderArea::rectangleTrigger() {
+    shapeToggleTrigger(ShapeName::Rectangle);
+}
+void RenderArea::lineTrigger() {
+    shapeToggleTrigger(ShapeName::Line);
+}
+void RenderArea::polygonTrigger() {
+    shapeToggled = ShapeName::Polygon;
+}
+void RenderArea::selectTrigger() {
+    shapeToggleTrigger(ShapeName::Select);
 }
 
 template<typename T>

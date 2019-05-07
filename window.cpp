@@ -33,9 +33,9 @@ Window::Window() {
     chooseMenu = menuBar->addMenu("Group");
     addAction(SLOT(disbandGroup()), "Delete Group", groupBar, false);
     addAction(SLOT(tileStart()), "Tile", groupBar, false);
+    addAction(SLOT(screenTest()), "Save Screenshot", groupBar, false);
 
     chooseMenu = menuBar->addMenu("Edit");
-    addAction(SLOT(screenTest()), "Scale", editBar, false);
     addAction(SLOT(bringToFront()), "Bring Shape to Front", editBar, false);
     addAction(SLOT(bringForward()), "Bring Shape Forward", editBar, false);
     addAction(SLOT(bringBackward()), "Push Shape Backwards", editBar, false);
@@ -44,7 +44,7 @@ Window::Window() {
     layout()->setMenuBar(menuBar);
     pal.setColor(QPalette::Background, Qt::white);
     setPalette(pal);
-    setWindowTitle(tr("Draw"));
+    setWindowTitle(tr("Wallpaper Maker"));
     setFixedSize(1600, 900);
 }
 

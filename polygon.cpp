@@ -42,8 +42,7 @@ void Polygon::mousePressEvent(QMouseEvent *event) {
         currentState = State::Creating;
         break;
     case State::Creating:
-        if(std::abs(EX - path.elementAt(0).x) < 5 ||
-                std::abs(EY - path.elementAt(0).y) < 5) {
+        if(std::pow(EX - path.elementAt(0).x, 2) + std::pow(EY - path.elementAt(0).y, 2) < 20) {
             path.closeSubpath();
             currentState = State::Finished;
         }
@@ -107,5 +106,10 @@ void Polygon::translate(Vec2d translateBy) {
     path.translate(translateBy.x, translateBy.y);
 }
 
-ShapePtrVctr Polygon::disband() {return ShapePtrVctr{};}
+ShapePtrVctr Polygon::disband() {
+    path.closeSubpath();
+    currentState = State::Finished;
+    return ShapePtrVctr{};
+}
+
 void Polygon::tile() {}

@@ -34,11 +34,11 @@ protected:
     void keyPressEvent(QKeyEvent *event) override;
 
 public slots:
-    void ellipseTrigger() { shapeToggled = ShapeName::Ellipse; }
-    void rectangleTrigger() { shapeToggled = ShapeName::Rectangle; }
-    void lineTrigger() { shapeToggled = ShapeName::Line; }
-    void polygonTrigger() { shapeToggled = ShapeName::Polygon; }
-    void selectTrigger() { shapeToggled = ShapeName::Select; }
+    void ellipseTrigger();
+    void rectangleTrigger();
+    void lineTrigger();
+    void polygonTrigger();
+    void selectTrigger();
     void colorPenOpened();
     void colorBrushOpened();
     void tileStart();
@@ -56,6 +56,7 @@ public: //remake private
 
     void setActiveShape(Shape *shape);
     void updateMasterState();
+    void shapeToggleTrigger(ShapeName newShape);
     unsigned int activeShapePosition();
 
     unsigned int masterIndex = 0;

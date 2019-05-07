@@ -109,4 +109,3 @@ void Ellipse::translate(Vec2d translateBy) {
 
 ShapePtrVctr Ellipse::disband() {return ShapePtrVctr{};}
 void Ellipse::tile() {}
-

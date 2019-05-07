@@ -1,5 +1,7 @@
 #include "group.h"
 
+const double maxSize = 15;
+
 Group::Group()
 {
 
@@ -16,6 +18,8 @@ void Group::draw(QPainter *painter) {
             tileRect[1].x = std::max(tileRect[1].x, obj->boundingRect()[1].x);
             tileRect[1].y = std::max(tileRect[1].y, obj->boundingRect()[1].y);
         }
+        if(tileRect[1].x < maxSize) {tileRect[1].x = maxSize;}
+        if(tileRect[1].y < maxSize) {tileRect[1].y = maxSize;}
 
         for(auto& obj:childShapes) {
             for(double x = 0; x < 1600; x += tileRect[1].x) {
@@ -39,6 +43,18 @@ void Group::draw(QPainter *painter, Vec2d offset) {
 //            obj->draw(painter, offset);
 //        }
 //    }
+}
+
+void Group::changePen(QPen pen) {
+    for(auto& obj:childShapes) {
+        obj->changePen(pen);
+    }
+}
+
+void Group::changeBrush(QBrush brush) {
+    for(auto& obj:childShapes) {
+        obj->changeBrush(brush);
+    }
 }
 
 std::vector<Vec2d> Group::boundingRect() {
@@ -72,6 +88,7 @@ void Group::mouseMoveEvent(QMouseEvent *event) {
         translate({EX - movePoint.x, EY - movePoint.y});
         movePoint = {EX, EY};
     }
+    std::vector<Vec2d> tileRect;
 }
 
 bool Group::isClickedOn(QMouseEvent* event) {
