@@ -16,11 +16,11 @@ Window::Window() {
     QActionGroup *editBar  = new QActionGroup(this);
 
     chooseMenu = menuBar->addMenu("Shape");
-    addAction(SLOT(ellipseTrigger()), "Ellipse", shapeBar, true);
-    addAction(SLOT(rectangleTrigger()), "Rectangle", shapeBar, true);
-    addAction(SLOT(lineTrigger()), "Line", shapeBar, true);
-    addAction(SLOT(polygonTrigger()), "Polygon", shapeBar, true);
-    addAction(SLOT(selectTrigger()), "Select", shapeBar, true);
+    addAction(SLOT(ellipseTrigger()), "Ellipse", shapeBar, false);
+    addAction(SLOT(rectangleTrigger()), "Rectangle", shapeBar, false);
+    addAction(SLOT(lineTrigger()), "Line", shapeBar, false);
+    addAction(SLOT(polygonTrigger()), "Polygon", shapeBar, false);
+    addAction(SLOT(selectTrigger()), "Select", shapeBar, false);
 
     chooseMenu = menuBar->addMenu("Color");
     addAction(SLOT(colorPenOpened()), "Choose Outline Color", colorBar, false);
@@ -50,7 +50,7 @@ Window::Window() {
 
 void Window::addAction(const char* slot, QString actionName, QActionGroup *actionGroup, bool canCheck) {
     menuAction = chooseMenu->addAction(actionName);
-    menuAction->setCheckable(canCheck);
+    menuAction->setCheckable(canCheck); //may be redundant now
     actionGroup->addAction(menuAction);
     connect(menuAction, SIGNAL(triggered()), renderArea, slot);
 }

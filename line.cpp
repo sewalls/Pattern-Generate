@@ -46,19 +46,24 @@ void Line::mouseMoveEvent(QMouseEvent *event) {
     switch(currentState) {
     case State::Creating:
         p2 = {EX, EY};
-        if(event->modifiers() == Qt::ShiftModifier) {
-            if(EX > p1.x && EY > p1.y) {
-                p2 = {EX, p1.y + (EX - p1.x)};
+        if(event->modifiers() == Qt::ShiftModifier) { //this only half works, I have no idea why
+            Vec2d v2 = p2 - p1;
+            std::vector<Vec2d> orthogons;
+            orthogons.push_back({1, 0});
+            orthogons.push_back({sqrt(2)/2, sqrt(2)/2});
+            orthogons.push_back({0, 1});
+            orthogons.push_back({-sqrt(2)/2, sqrt(2)/2});
+            orthogons.push_back({0, -1});
+            orthogons.push_back({-sqrt(2)/2, -sqrt(2)/2});
+            orthogons.push_back({-1, 0});
+            orthogons.push_back({sqrt(2)/2, -sqrt(2)/2});
+            Vec2d closest = {-1000, -1000};
+            for(unsigned int i = 0; i < 4; i++) {
+                if(distanceBetween(orthogons[i], v2) < distanceBetween(closest, v2)) {
+                    closest = orthogons[i];
+                }
             }
-            if(EX < p1.x && EY > p1.y) {
-                p2 = {EX, p1.y - (EX - p1.x)};
-            }
-            if(EX > p1.x && EY < p1.y) {
-                p2 = {EX, p1.y - (EX - p1.x)};
-            }
-            if(EX < p1.x && EY < p1.y) {
-                p2 = {EX, p1.y + (EX - p1.x)};
-            }
+            p2 = projection(closest, v2) + p1;
         }
         break;
     case State::Moving: {

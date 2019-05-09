@@ -13,6 +13,7 @@ public:
     void rotate(Vec2d center, double theta);
 
     Vec2d scaled(double s) {return {x * s, y * s};}
+    Vec2d unit() {return scaled(1 / sqrt(lengthSquared()));}
 
     double lengthSquared() {return x * x + y * y;}
 

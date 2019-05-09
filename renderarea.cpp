@@ -327,7 +327,7 @@ void RenderArea::bringToBack() {
 }
 
 void RenderArea::screenTest() {
-    QPixmap pixmap(1547, 874); //weird-ass margins, don't ask
+    QPixmap pixmap(1547, 874); //fix these wack margins
     QString string = QString::fromStdString(std::to_string(time(nullptr)));
     string.append(".png");
     this->render(&pixmap);
