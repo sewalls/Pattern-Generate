@@ -22,6 +22,8 @@ std::vector<Vec2d> Line::boundingRect() {
 void Line::mousePressEvent(QMouseEvent *event) {
     switch(currentState) {
     case State::Precreated:
+        if(event->modifiers == Qt::ControlModifier) {
+            
         p1 = {EX, EY};
         p2 = {EX, EY};
         currentState = State::Creating;
@@ -46,7 +48,7 @@ void Line::mouseMoveEvent(QMouseEvent *event) {
     switch(currentState) {
     case State::Creating:
         p2 = {EX, EY};
-        if(event->modifiers() == Qt::ShiftModifier) { //this only half works, I have no idea why
+        if(event->modifiers() == Qt::ShiftModifier) {
             Vec2d v2 = p2 - p1;
             std::vector<Vec2d> orthogons;
             orthogons.push_back({1, 0});
@@ -57,7 +59,7 @@ void Line::mouseMoveEvent(QMouseEvent *event) {
             orthogons.push_back({-sqrt(2)/2, -sqrt(2)/2});
             orthogons.push_back({-1, 0});
             orthogons.push_back({sqrt(2)/2, -sqrt(2)/2});
-            Vec2d closest = {-2000, -2000};
+            Vec2d closest = {-2000, -2000}; //I haven't really logic'ed this out, probably doesn't need to be this far away
             for(unsigned int i = 0; i < orthogons.size(); i++) {
                 if(distanceBetween(orthogons[i], v2) < distanceBetween(closest, v2)) {
                     closest = orthogons[i];
