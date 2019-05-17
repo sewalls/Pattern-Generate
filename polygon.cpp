@@ -23,18 +23,6 @@ void Polygon::draw(QPainter *painter, Vec2d offset) {
     painter->fillPath(newPath, brush);
 }
 
-std::vector<Vec2d> Polygon::boundingRect() {
-    Vec2d p1 = {0, 0};
-    Vec2d p2 = {0, 0};
-
-    for(int i = 0; i < path.elementCount(); i++) {
-        //p1 = {std::max(p1.x, path.elementAt(i).x), std::max(p1.y, path.elementAt(i).y)};
-        p2 = {std::max(p2.x, path.elementAt(i).x), std::max(p2.y, path.elementAt(i).y)};
-    }
-
-    return {p1, p2};
-}
-
 void Polygon::mousePressEvent(QMouseEvent *event) {
     switch(currentState) {
     case State::Precreated:
@@ -83,6 +71,10 @@ void Polygon::mouseReleaseEvent(QMouseEvent *) {
     }
 }
 
+void Polygon::translate(Vec2d translateBy) {
+    path.translate(translateBy.x, translateBy.y);
+}
+
 bool Polygon::isClickedOn(QMouseEvent *event) {
     Vec2d u = {EX, EY};
     Vec2d v = {EX + 10000, EY};
@@ -102,8 +94,14 @@ bool Polygon::isClickedOn(QMouseEvent *event) {
     return count % 2;
 }
 
-void Polygon::translate(Vec2d translateBy) {
-    path.translate(translateBy.x, translateBy.y);
+Vec2d Polygon::boundingRect() {
+    Vec2d p2 = {0, 0};
+
+    for(int i = 0; i < path.elementCount(); i++) {
+        p2 = {std::max(p2.x, path.elementAt(i).x), std::max(p2.y, path.elementAt(i).y)};
+    }
+
+    return p2;
 }
 
 ShapePtrVctr Polygon::disband() {
@@ -111,5 +109,3 @@ ShapePtrVctr Polygon::disband() {
     currentState = State::Finished;
     return ShapePtrVctr{};
 }
-
-void Polygon::tile() {}

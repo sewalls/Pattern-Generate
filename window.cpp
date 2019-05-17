@@ -16,30 +16,30 @@ Window::Window() {
     QActionGroup *editBar  = new QActionGroup(this);
 
     chooseMenu = menuBar->addMenu("Shape");
-    addAction(SLOT(ellipseTrigger()), "Ellipse", shapeBar, false);
-    addAction(SLOT(rectangleTrigger()), "Rectangle", shapeBar, false);
-    addAction(SLOT(lineTrigger()), "Line", shapeBar, false);
-    addAction(SLOT(polygonTrigger()), "Polygon", shapeBar, false);
-    addAction(SLOT(selectTrigger()), "Select", shapeBar, false);
+    addAction(SLOT(ellipseTrigger()), "Ellipse", shapeBar);
+    addAction(SLOT(rectangleTrigger()), "Rectangle", shapeBar);
+    addAction(SLOT(lineTrigger()), "Line", shapeBar);
+    addAction(SLOT(polygonTrigger()), "Polygon", shapeBar);
+    addAction(SLOT(selectTrigger()), "Select", shapeBar);
 
     chooseMenu = menuBar->addMenu("Color");
-    addAction(SLOT(colorPenOpened()), "Choose Outline Color", colorBar, false);
-    addAction(SLOT(colorBrushOpened()), "Choose Fill Color", colorBar, false);
+    addAction(SLOT(colorPenOpened()), "Choose Outline Color", colorBar);
+    addAction(SLOT(colorBrushOpened()), "Choose Fill Color", colorBar);
     menuAction = chooseMenu->addAction("Choose Background Color");
     menuAction->setCheckable(false);
     colorBar->addAction(menuAction);
     connect(menuAction, SIGNAL(triggered()), this, SLOT(backgroundTriggered()));
 
     chooseMenu = menuBar->addMenu("Group");
-    addAction(SLOT(disbandGroup()), "Delete Group", groupBar, false);
-    addAction(SLOT(tileStart()), "Tile", groupBar, false);
-    addAction(SLOT(screenTest()), "Save Screenshot", groupBar, false);
+    addAction(SLOT(disbandGroup()), "Delete Group", groupBar);
+    addAction(SLOT(tileStart()), "Tile", groupBar);
+    addAction(SLOT(screenTest()), "Save Screenshot", groupBar);
 
     chooseMenu = menuBar->addMenu("Edit");
-    addAction(SLOT(bringToFront()), "Bring Shape to Front", editBar, false);
-    addAction(SLOT(bringForward()), "Bring Shape Forward", editBar, false);
-    addAction(SLOT(bringBackward()), "Push Shape Backwards", editBar, false);
-    addAction(SLOT(bringToBack()), "Push Shape to Back", editBar, false);
+    addAction(SLOT(bringToFront()), "Bring Shape to Front", editBar);
+    addAction(SLOT(bringForward()), "Bring Shape Forward", editBar);
+    addAction(SLOT(bringBackward()), "Push Shape Backwards", editBar);
+    addAction(SLOT(bringToBack()), "Push Shape to Back", editBar);
 
     layout()->setMenuBar(menuBar);
     pal.setColor(QPalette::Background, Qt::white);
@@ -48,9 +48,9 @@ Window::Window() {
     setFixedSize(1600, 900);
 }
 
-void Window::addAction(const char* slot, QString actionName, QActionGroup *actionGroup, bool canCheck) {
+void Window::addAction(const char* slot, QString actionName, QActionGroup *actionGroup) {
     menuAction = chooseMenu->addAction(actionName);
-    menuAction->setCheckable(canCheck); //may be redundant now
+    menuAction->setCheckable(true);
     actionGroup->addAction(menuAction);
     connect(menuAction, SIGNAL(triggered()), renderArea, slot);
 }

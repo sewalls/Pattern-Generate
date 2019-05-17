@@ -21,13 +21,6 @@ void RenderArea::paintEvent(QPaintEvent *) {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
 
-    painter.drawText(5, 10, QString::fromStdString(std::to_string(static_cast<int>(masterState))));
-    painter.drawText(15, 10, QString::fromStdString(std::to_string(selectGroup->childShapes.size())));
-    painter.drawText(35, 10, QString::fromStdString(std::to_string(hasFocus())));
-    if(activeShape) {
-        painter.drawText(25, 10, QString::fromStdString(std::to_string(activeShape->index)));
-    }
-
     for(auto& obj:shapes) {
         obj->draw(&painter);
     }
@@ -117,7 +110,7 @@ void RenderArea::mouseMoveEvent(QMouseEvent *event) {
             }
         }
 
-        event->setLocalPos({eventOrig.x, eventOrig.y}); //make the new group the active shape?
+        event->setLocalPos({eventOrig.x, eventOrig.y});
     }
 
     for(auto& obj:shapes) {
@@ -327,7 +320,7 @@ void RenderArea::bringToBack() {
 }
 
 void RenderArea::screenTest() {
-    QPixmap pixmap(1547, 874); //fix these wack margins
+    QPixmap pixmap(1547, 848);
     QString string = QString::fromStdString(std::to_string(time(nullptr)));
     string.append(".png");
     this->render(&pixmap);

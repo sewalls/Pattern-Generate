@@ -15,7 +15,7 @@ class Window : public QWidget
 
 public:
     Window();
-    void addAction(const char *slot, QString actionName, QActionGroup *actionGroup, bool canCheck);
+    void addAction(const char *slot, QString actionName, QActionGroup *actionGroup);
 
 public slots:
     void backgroundTriggered();

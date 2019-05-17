@@ -15,13 +15,12 @@ void Line::draw(QPainter *painter, Vec2d offset) {
     painter->drawLine(QLineF{p1.x + offset.x, p1.y + offset.y, p2.x + offset.x, p2.y + offset.y});
 }
 
-std::vector<Vec2d> Line::boundingRect() {
-    return {{std::min(p1.x, p2.x), std::min(p1.y, p2.y)}, {std::max(p1.x, p2.x), std::max(p1.y, p2.y)}};
-}
-
 void Line::mousePressEvent(QMouseEvent *event) {
     switch(currentState) {
     case State::Precreated:
+        if(event->modifiers() == Qt::ControlModifier) {
+
+        }
         p1 = {EX, EY};
         p2 = {EX, EY};
         currentState = State::Creating;
@@ -46,7 +45,7 @@ void Line::mouseMoveEvent(QMouseEvent *event) {
     switch(currentState) {
     case State::Creating:
         p2 = {EX, EY};
-        if(event->modifiers() == Qt::ShiftModifier) { //this only half works, I have no idea why
+        if(event->modifiers() == Qt::ShiftModifier) {
             Vec2d v2 = p2 - p1;
             std::vector<Vec2d> orthogons;
             orthogons.push_back({1, 0});
@@ -57,7 +56,7 @@ void Line::mouseMoveEvent(QMouseEvent *event) {
             orthogons.push_back({-sqrt(2)/2, -sqrt(2)/2});
             orthogons.push_back({-1, 0});
             orthogons.push_back({sqrt(2)/2, -sqrt(2)/2});
-            Vec2d closest = {-2000, -2000};
+            Vec2d closest = {-2000, -2000}; //I haven't really logic'ed this out, probably doesn't need to be this far away
             for(unsigned int i = 0; i < orthogons.size(); i++) {
                 if(distanceBetween(orthogons[i], v2) < distanceBetween(closest, v2)) {
                     closest = orthogons[i];
@@ -76,6 +75,11 @@ void Line::mouseMoveEvent(QMouseEvent *event) {
     }
 }
 
+void Line::translate(Vec2d translateBy) {
+    p1.translate(translateBy.x, translateBy.y);
+    p2.translate(translateBy.x, translateBy.y);
+}
+
 bool Line::isClickedOn(QMouseEvent* event) {
     Vec2d p = {EX, EY};
     Vec2d b;
@@ -90,10 +94,6 @@ bool Line::isClickedOn(QMouseEvent* event) {
     return sqrt(b.lengthSquared()) < 10;
 }
 
-void Line::translate(Vec2d translateBy) {
-    p1.translate(translateBy.x, translateBy.y);
-    p2.translate(translateBy.x, translateBy.y);
+Vec2d Line::boundingRect() {
+    return {std::max(p1.x, p2.x), std::max(p1.y, p2.y)};
 }
-
-ShapePtrVctr Line::disband() {return ShapePtrVctr{};}
-void Line::tile() {}

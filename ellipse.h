@@ -14,9 +14,9 @@ public:
     void mouseMoveEvent(QMouseEvent *event) override;
     void translate(Vec2d translateBy) override;
     bool isClickedOn(QMouseEvent *event) override;
-    std::vector<Vec2d> boundingRect() override;
-    ShapePtrVctr disband() override;
-    void tile() override;
+    Vec2d boundingRect() override;
+    ShapePtrVctr disband() override {return ShapePtrVctr{};}
+    void tile() override {}
     std::vector<Vec2d> param();
 
 private:
