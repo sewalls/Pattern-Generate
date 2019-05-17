@@ -50,7 +50,7 @@ Window::Window() {
 
 void Window::addAction(const char* slot, QString actionName, QActionGroup *actionGroup) {
     menuAction = chooseMenu->addAction(actionName);
-    menuAction->setCheckable(true);
+    menuAction->setCheckable(false);
     actionGroup->addAction(menuAction);
     connect(menuAction, SIGNAL(triggered()), renderArea, slot);
 }
@@ -60,5 +60,3 @@ void Window::backgroundTriggered() {
     pal.setColor(QPalette::Background, dialog.getColor(Qt::white, this, "Pick a Color", dialog.options()));
     setPalette(pal);
 }
-
-
