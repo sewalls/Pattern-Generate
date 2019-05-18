@@ -111,13 +111,13 @@ void Group::tile() {
 
 
 void Group::changePen(QPen pen) {
-    for(auto& obj:childShapes) {
-        obj->changePen(pen);
-    }
+//    for(auto& obj:childShapes) {
+//        obj->changePen(pen);
+//    }
 }
 
 void Group::changeBrush(QBrush brush) {
-    for(auto& obj:childShapes) {
-        obj->changeBrush(brush);
-    }
+//    for(auto& obj:childShapes) {
+//        obj->changeBrush(brush);
+//    }
 }
