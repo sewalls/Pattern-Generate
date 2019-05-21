@@ -39,16 +39,16 @@ public slots:
     void lineTrigger();
     void polygonTrigger();
     void selectTrigger();
-    void colorPenOpened();
-    void colorBrushOpened();
-    void tileStart();
-    void disbandGroup();
+    void penTrigger();
+    void brushTrigger();
+    void tileTrigger();
+    void disbandTrigger();
     void scalePrompt();
     void bringToFront();
     void bringForward();
     void bringBackward();
     void bringToBack();
-    void screenTest();
+    void screenTrigger();
 
 public: //remake private
     template<typename T>

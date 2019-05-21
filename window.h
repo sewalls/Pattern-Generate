@@ -18,7 +18,7 @@ public:
     void addAction(const char *slot, QString actionName, QActionGroup *actionGroup);
 
 public slots:
-    void backgroundTriggered();
+    void backgroundTrigger();
 
 private:
     RenderArea *renderArea;
